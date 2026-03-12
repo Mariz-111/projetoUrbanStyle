@@ -118,8 +118,9 @@ CREATE TABLE avaliacao (
 );
 
 CREATE TABLE status_pedido(
-id INTEGER PRIMARY KEY AUTOINCREMENT,
-status VARCHAR(50)
+id INTEGER PRIMARY KEY,
+codigo TEXT UNIQUE NOT NULL
+  CHECK(codigo IN ('pendente', 'pago', 'separacao', 'envido', 'entregue', 'cancelado', 'enviado', 'entregue', 'cancalado'))
 );
 
 CREATE table funcionario (
@@ -276,28 +277,6 @@ VALUES
 ('Urban Fashion','23.456.789/0001-88','1133344455','vendas@urban.com','Rua das Indústrias 50','Campinas','SP','13010-100'),
 ('RetroX Relógios','34.567.890/0001-77','1145567788','suporte@retrox.com','Av. Central 200','Rio de Janeiro','RJ','20010-200');
 
-ALTER TABLE pedidos
-ADD status_id INTEGER;
-
-ALTER TABLE pedidos
-ADD FOREIGN KEY (status_id) REFERENCES status_pedido(id);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+SELECT * 
+FROM pedidos
+WHERE status_pedidos = 'Pendentes';
