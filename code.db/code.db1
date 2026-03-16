@@ -2,7 +2,7 @@ CREATE TABLE cliente (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   email VARCHAR(40),
   numero VARCHAR(20)
-)
+);
 
 CREATE TABLE categorias (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -129,6 +129,16 @@ CREATE TABLE avaliacao (
 CREATE TABLE status_pedido (
   id INTEGER PRIMARY KEY,
   codigo TEXT UNIQUE NOT NULL CHECK (codigo IN ('pendente', 'pago', 'separacao', 'enviado', 'entregue', 'cancelado'))
+);
+
+CREATE TABLE usuario_adm (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  email VARCHAR(100) NOT NULL UNIQUE,
+  senha CHAR(8) NOT NULL,
+  estoque_id INTEGER,
+  estoque_relatorio_id INTEGER,
+  FOREIGN KEY (estoque_id) REFERENCES estoque(id),
+  FOREIGN KEY (estoque_relatorio_id) REFERENCES estoque_relatorio(id)
 );
 
 CREATE TABLE funcionario (
@@ -283,6 +293,11 @@ VALUES
 (3, 3, 1, 129.90),
 (4, 4, 1, 690.90);
 
+INSERT INTO usuario_adm (email, senha, estoque_id, estoque_relatorio_id)
+VALUES
+('eduardoadmin0@urbanstyle.com', 'adm12345', 1, 1),
+('eduardoadmin1@urbanstyle', 'adm54321', 2, 2);
+
 INSERT INTO funcionario (nome, cargo, salario, telefone, email, data_contratacao)
 VALUES
 ('Ricardo Santos','Gerente',4500.00,'11987654321','ricardo@empresa.com','2018-01-10'),
@@ -298,44 +313,19 @@ VALUES
 CREATE VIEW vw_pedido_completo AS
 SELECT
   pe.id AS pedido_id,
-  c.id AS cliente_id,
-  au.nome AS cliente_nome,
+  c.nome AS cliente_nome,
   c.email AS cliente_email,
-  pe.subtotal,
-  pe.frete AS pedido_frete,
-  (pe.subtotal + pe.frete) AS pedido_total,
   fp.tipo_de_pagamento,
-  ip.quantidade AS item_quantidade,
-  ip.preco AS item_preco,
   pr.nome AS produto_nome,
-  pr.marca,
-  pr.tamanho,
-  pr.cor AS produto_cor,
   cat.nome AS categoria,
-  est.quantidade AS estoque_atual,
-  av.nota AS avaliacao_nota,
-  av.comentario AS avaliacao_comentario,
-  cp.id AS compra_id,
-  cp.data_pagamento,
-  cp.status_pagamento,
-  cp.status_entrega,
-  cu.codigo AS cupom_codigo,
-  cu.desconto AS cupom_desconto,
-  ic.quantidade AS item_compra_quantidade,
-  ic.preco_unitario AS item_compra_preco_unitario,
-  f.nome_empresa AS fornecedor,
-  er.registro_movimentacao
+  ip.quantidade,
+  ip.preco,
+  pe.subtotal,
+  pe.frete,
+  (pe.subtotal + pe.frete) AS pedido_total
 FROM pedidos pe
-LEFT JOIN cliente c ON c.id = pe.cliente_id
-LEFT JOIN area_do_usuario au ON au.cliente_id = c.id
+LEFT JOIN area_do_usuario c ON c.cliente_id = pe.cliente_id
 LEFT JOIN forma_de_pagamento fp ON fp.id = pe.pagamento_id
 LEFT JOIN itens_pedido ip ON ip.pedido_id = pe.id
 LEFT JOIN produtos pr ON pr.id = ip.produto_id
-LEFT JOIN categorias cat ON cat.id = pr.categoria_id
-LEFT JOIN estoque est ON est.produto_id = pr.id
-LEFT JOIN avaliacao av ON av.usuario_id = c.id AND av.produto_id = pr.id
-LEFT JOIN compras cp ON cp.usuario_id = c.id AND cp.produto_id = pr.id
-LEFT JOIN cupons cu ON cu.id = cp.cupom_id
-LEFT JOIN itens_compra ic ON ic.compra_id = cp.id AND ic.produto_id = pr.id
-LEFT JOIN estoque_relatorio er ON er.produto_id = pr.id
-LEFT JOIN fornecedor f ON f.nome_empresa LIKE '%' || pr.marca || '%';
+LEFT JOIN categorias cat ON cat.id = pr.categoria_id;
