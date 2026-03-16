@@ -313,19 +313,44 @@ VALUES
 CREATE VIEW vw_pedido_completo AS
 SELECT
   pe.id AS pedido_id,
-  c.nome AS cliente_nome,
-  c.email AS cliente_email,
-  fp.tipo_de_pagamento,
-  pr.nome AS produto_nome,
-  cat.nome AS categoria,
-  ip.quantidade,
-  ip.preco,
+
+  (SELECT c.nome
+   FROM area_do_usuario c
+   WHERE c.cliente_id = pe.cliente_id) AS cliente_nome,
+
+  (SELECT c.email
+   FROM area_do_usuario c
+   WHERE c.cliente_id = pe.cliente_id) AS cliente_email,
+
+  (SELECT fp.tipo_de_pagamento
+   FROM forma_de_pagamento fp
+   WHERE fp.id = pe.pagamento_id) AS tipo_de_pagamento,
+
+  (SELECT pr.nome
+   FROM produtos pr
+   JOIN itens_pedido ip2 ON pr.id = ip2.produto_id
+   WHERE ip2.pedido_id = pe.id
+   LIMIT 1) AS produto_nome,
+
+  (SELECT cat.nome
+   FROM categorias cat
+   JOIN produtos pr2 ON cat.id = pr2.categoria_id
+   JOIN itens_pedido ip3 ON pr2.id = ip3.produto_id
+   WHERE ip3.pedido_id = pe.id
+   LIMIT 1) AS categoria,
+
+  (SELECT ip.quantidade
+   FROM itens_pedido ip
+   WHERE ip.pedido_id = pe.id
+   LIMIT 1) AS quantidade,
+
+  (SELECT ip.preco
+   FROM itens_pedido ip
+   WHERE ip.pedido_id = pe.id
+   LIMIT 1) AS preco,
+
   pe.subtotal,
   pe.frete,
   (pe.subtotal + pe.frete) AS pedido_total
-FROM pedidos pe
-LEFT JOIN area_do_usuario c ON c.cliente_id = pe.cliente_id
-LEFT JOIN forma_de_pagamento fp ON fp.id = pe.pagamento_id
-LEFT JOIN itens_pedido ip ON ip.pedido_id = pe.id
-LEFT JOIN produtos pr ON pr.id = ip.produto_id
-LEFT JOIN categorias cat ON cat.id = pr.categoria_id;
+
+FROM pedidos pe;
