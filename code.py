@@ -15,7 +15,7 @@ class Categoria:
 @dataclass
 class Fornecedor:
     id: int
-    nome: str
+    nome_empresa: str
     cnpj: str
 
 @dataclass
@@ -88,9 +88,6 @@ class ItemPedido:
     qtd: int
     preco: float
 
-
-# BANCO
-
 clientes = []
 categorias = []
 fornecedores = []
@@ -104,13 +101,11 @@ pedidos = []
 itens = []
 carrinho = []
 
-# AUX
-
 def agora():
     return datetime.now().strftime("%d/%m %H:%M")
 
 def novo_id(lista):
-    return len(lista) + 1  # simples mesmo
+    return len(lista) + 1  
 
 def get_prod(pid):
     for p in produtos:
@@ -121,7 +116,6 @@ def get_est(pid):
     for e in estoques:
         if e.produto_id == pid:
             return e
-
 
 # CADASTRO
 
@@ -197,6 +191,28 @@ def entrada():
     else:
         print("produto não achei")
 
+#FORNECEDOR
+
+def cadastrar_fornecedor():
+    print("\n--- Cadastrar Fornecedor ---")
+    nome = input("Nome da Empresa: ")
+    cnpj = input("CNPJ: ")
+
+    fornecedor = Fornecedor(
+        proximo_id(fornecedores),
+        nome,
+        cnpj
+    )
+
+    fornecedores.append(fornecedor)
+    print("Fornecedor cadastrado!")
+
+
+def listar_fornecedores():
+    print("\n--- Fornecedores ---")
+    for f in fornecedores:
+        print(f)
+
 # VENDAS
 
 def comprar():
@@ -244,7 +260,7 @@ def add_cart():
     pid = int(input("produto: "))
     qtd = int(input("qtd: "))
 
-    carrinho.append((pid, qtd))  # depois melhorar validação
+    carrinho.append((pid, qtd)) 
     print("add no carrinho")
 
 def fechar_cart():
