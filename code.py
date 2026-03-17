@@ -15,6 +15,24 @@ class Categoria:
     nome: str
 
 @dataclass
+class Fornecedor:
+    id: int
+    nome: str
+    cnpj: str
+
+@dataclass
+class Funcionario:
+    id: int
+    nome: str
+    cargo: str
+
+@dataclass
+class Administrador:
+    id: int
+    nome: str
+    senha: str
+
+@dataclass
 class Produto:
     id: int
     nome: str
@@ -31,6 +49,15 @@ class Estoque:
     id: int
     produto_id: int
     quantidade: int
+
+@dataclass
+class MovimentoEstoque:
+    id: int
+    produto_id: int
+    tipo: str
+    quantidade: int
+    data: str
+    funcionario_id: int
 
 @dataclass
 class Compra:
@@ -68,8 +95,12 @@ class ItemPedido:
 
 clientes = []
 categorias = []
+fornecedores = []
+funcionarios = []
+administradores = []
 produtos = []
 estoques = []
+movimentos_estoque = []
 compras = []
 pedidos = []
 itens_pedido = []
@@ -103,6 +134,24 @@ def cadastrar_categoria():
     nome = input("Nome categoria: ")
     categorias.append(Categoria(proximo_id(categorias), nome))
     print("Categoria cadastrada!")
+
+def cadastrar_fornecedor():
+    nome = input("Nome fornecedor: ")
+    cnpj = input("CNPJ: ")
+    fornecedores.append(Fornecedor(proximo_id(fornecedores), nome, cnpj))
+    print("Fornecedor cadastrado!")
+
+def cadastrar_funcionario():
+    nome = input("Nome funcionário: ")
+    cargo = input("Cargo: ")
+    funcionarios.append(Funcionario(proximo_id(funcionarios), nome, cargo))
+    print("Funcionário cadastrado!")
+
+def cadastrar_admin():
+    nome = input("Nome admin: ")
+    senha = input("Senha: ")
+    administradores.append(Administrador(proximo_id(administradores), nome, senha))
+    print("Administrador cadastrado!")
 
 def cadastrar_produto():
     if not categorias:
@@ -147,11 +196,22 @@ def entrada_estoque():
 
     pid = int(input("ID produto: "))
     qtd = int(input("Quantidade: "))
+    fid = int(input("ID funcionário: "))
 
     estoque = buscar_estoque(pid)
 
     if estoque:
         estoque.quantidade += qtd
+
+        movimentos_estoque.append(MovimentoEstoque(
+            proximo_id(movimentos_estoque),
+            pid,
+            "ENTRADA",
+            qtd,
+            agora(),
+            fid
+        ))
+
         print("Entrada registrada!")
     else:
         print("Produto não encontrado")
@@ -176,6 +236,15 @@ def comprar_direto():
 
     total = produto.preco * qtd
     estoque.quantidade -= qtd
+
+    movimentos_estoque.append(MovimentoEstoque(
+        proximo_id(movimentos_estoque),
+        pid,
+        "SAIDA",
+        qtd,
+        agora(),
+        0
+    ))
 
     compras.append(Compra(
         proximo_id(compras),
@@ -219,16 +288,6 @@ def adicionar_carrinho():
 
     print("Adicionado ao carrinho")
 
-def ver_carrinho():
-    total = 0
-
-    for item in carrinho:
-        sub = item["quantidade"] * item["valor"]
-        total += sub
-        print(item["nome"], sub)
-
-    print("TOTAL:", total)
-
 def finalizar_carrinho():
     if not carrinho:
         print("Carrinho vazio")
@@ -255,6 +314,15 @@ def finalizar_carrinho():
 
         estoque.quantidade -= item["quantidade"]
 
+        movimentos_estoque.append(MovimentoEstoque(
+            proximo_id(movimentos_estoque),
+            produto.id,
+            "SAIDA",
+            item["quantidade"],
+            agora(),
+            0
+        ))
+
         subtotal += item["quantidade"] * item["valor"]
 
         itens_pedido.append(ItemPedido(
@@ -279,16 +347,17 @@ def listar_produtos():
         estoque = buscar_estoque(p.id)
         print(p.id, p.nome, "| R$", p.preco, "| Estoque:", estoque.quantidade if estoque else 0)
 
-def listar_clientes():
-    for c in clientes:
-        print(c)
-
 def listar_compras():
     for c in compras:
         print(c)
 
+def listar_movimentos():
+    print("\n--- MOVIMENTOS ---")
+    for m in movimentos_estoque:
+        print(m)
 
-# ================== MENUS ==================
+
+# ================== MENU ==================
 
 def menu():
     while True:
@@ -300,7 +369,11 @@ def menu():
         print("5 Comprar direto")
         print("6 Carrinho")
         print("7 Finalizar carrinho")
-        print("8 Relatórios")
+        print("8 Compras")
+        print("9 Fornecedor")
+        print("10 Funcionário")
+        print("11 Administrador")
+        print("12 Movimentos estoque")
         print("0 Sair")
 
         op = input("> ")
@@ -321,6 +394,14 @@ def menu():
             finalizar_carrinho()
         elif op == "8":
             listar_compras()
+        elif op == "9":
+            cadastrar_fornecedor()
+        elif op == "10":
+            cadastrar_funcionario()
+        elif op == "11":
+            cadastrar_admin()
+        elif op == "12":
+            listar_movimentos()
         else:
             break
 
