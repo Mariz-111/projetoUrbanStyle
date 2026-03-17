@@ -1,8 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
 
-# ===MODELOS ===
-
 @dataclass
 class Cliente:
     id: int
@@ -91,7 +89,7 @@ class ItemPedido:
     preco: float
 
 
-# === "BANCO" ===
+# BANCO
 
 clientes = []
 categorias = []
@@ -106,8 +104,7 @@ pedidos = []
 itens = []
 carrinho = []
 
-
-# === AUX ====
+# AUX
 
 def agora():
     return datetime.now().strftime("%d/%m %H:%M")
@@ -126,7 +123,7 @@ def get_est(pid):
             return e
 
 
-# === CADASTRO ===
+# CADASTRO
 
 def add_cliente():
     email = input("email: ")
@@ -182,7 +179,7 @@ def add_prod():
 
     print("produto foi")
 
-# === ESTOQUE ===
+# ESTOQUE
 
 def entrada():
     listar_prod()
@@ -200,7 +197,7 @@ def entrada():
     else:
         print("produto não achei")
 
-# === VENDAS ===
+# VENDAS
 
 def comprar():
     listar_prod()
@@ -239,7 +236,7 @@ def comprar():
 
     print("comprou ->", total)
 
-# === CARRINHO ===
+# CARRINHO
 
 def add_cart():
     listar_prod()
@@ -289,7 +286,7 @@ def fechar_cart():
 
     print("pedido fechado:", total)
 
-# === LISTAS ===
+# LISTAS
 
 def listar_prod():
     print("\nprodutos:")
@@ -307,7 +304,7 @@ def ver_movs():
     for m in movs:
         print(m)
 
-# === MENU ===
+# MENU
 
 def menu():
     while True:
