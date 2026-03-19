@@ -1,7 +1,8 @@
 CREATE TABLE cliente (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  email VARCHAR(40),
-  numero VARCHAR(20)
+  nome TEXT NOT NULL,
+  email TEXT UNIQUE NOT NULL,
+  telefone TEXT
 );
 
 CREATE TABLE categorias (
@@ -131,6 +132,16 @@ CREATE TABLE status_pedido (
   codigo TEXT UNIQUE NOT NULL CHECK (codigo IN ('pendente', 'pago', 'separacao', 'enviado', 'entregue', 'cancelado'))
 );
 
+CREATE TABLE estoque_relatorio (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  produto_id INTEGER,
+  entrada_de_mercadoria DATE,
+  saida_para_troca DATE,
+  saida_venda DATE,
+  registro_movimentacao VARCHAR(500),
+  FOREIGN KEY (produto_id) REFERENCES produtos(id)
+);
+
 CREATE TABLE usuario_adm (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   email VARCHAR(100) NOT NULL UNIQUE,
@@ -140,7 +151,7 @@ CREATE TABLE usuario_adm (
   FOREIGN KEY (estoque_id) REFERENCES estoque(id),
   FOREIGN KEY (estoque_relatorio_id) REFERENCES estoque_relatorio(id)
 );
-
+  
 CREATE TABLE funcionario (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   nome VARCHAR(32),
@@ -163,28 +174,18 @@ CREATE TABLE fornecedor (
   cep VARCHAR(9)
 );
 
-CREATE TABLE estoque_relatorio (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  produto_id INTEGER,
-  entrada_de_mercadoria DATE,
-  saida_para_troca DATE,
-  saida_venda DATE,
-  registro_movimentacao VARCHAR(500),
-  FOREIGN KEY (produto_id) REFERENCES produtos(id)
-);
-
-INSERT INTO cliente (id, email, numero)
+INSERT INTO cliente (id, nome, email, telefone)
 VALUES
-(1,'francisco@gmail.com', '12345678901'),
-(2,'julie@gmail.com', '98765432100'),
-(3,'marquinhos@gmail.com', '45612378900'),
-(4,'jefferson@gmail.com', '32165498700'),
-(5,'gustavo@email.com', '78945612300'),
-(6,'rafael@gmail.com', '65432198700'),
-(7,'odair@gmail.com', '31988776655'),
-(8,'samir@email.com', '74185296300'),
-(9,'fernando@gmail.com', '85274196300'),
-(10,'maria@email.com', '96385274100');
+(1,'Francisco', 'francisco@gmail.com', '12345678901'),
+(2,'Julie','julie@gmail.com', '98765432100'),
+(3,'Marquinhos','marquinhos@gmail.com', '45612378900'),
+(4,'Jefferson','jefferson@gmail.com', '32165498700'),
+(5,'Gustavo','gustavo@email.com', '78945612300'),
+(6,'Rafael','rafael@gmail.com', '65432198700'),
+(7,'Odair','odair@gmail.com', '31988776655'),
+(8,'Samir','samir@email.com', '74185296300'),
+(9,'Fernando','fernando@gmail.com', '85274196300'),
+(10,'Maria','maria@email.com', '96385274100');
 
 INSERT INTO area_do_usuario
 (id, cliente_id, nome, localizacao, telefone, cpf, email, senha, endereco, cep, numero_de_casa)
@@ -296,7 +297,7 @@ VALUES
 INSERT INTO usuario_adm (email, senha, estoque_id, estoque_relatorio_id)
 VALUES
 ('eduardoadmin0@urbanstyle.com', 'adm12345', 1, 1),
-('eduardoadmin1@urbanstyle', 'adm54321', 2, 2);
+('eduardoadmin1@urbanstyle.com', 'adm54321', 2, 2);
 
 INSERT INTO funcionario (nome, cargo, salario, telefone, email, data_contratacao)
 VALUES
@@ -352,5 +353,5 @@ SELECT
   pe.subtotal,
   pe.frete,
   (pe.subtotal + pe.frete) AS pedido_total
-
+  
 FROM pedidos pe;
