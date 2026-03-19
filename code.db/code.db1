@@ -15,6 +15,7 @@ CREATE TABLE produtos (
   nome VARCHAR(32),
   tamanho VARCHAR(100),
   categoria_id INTEGER,
+  fornecedor_id INTEGER,
   cor VARCHAR(17),
   preco DECIMAL(10,2),
   descricao TEXT,
@@ -82,7 +83,9 @@ CREATE TABLE forma_de_pagamento (
 CREATE TABLE pedidos (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   cliente_id INTEGER,
+  data_pedido INTEGER,
   pagamento_id INTEGER,
+  status INTEGER,
   subtotal DECIMAL(6,2),
   frete DECIMAL(6,2),
   FOREIGN KEY (cliente_id) REFERENCES cliente(id),
@@ -173,6 +176,16 @@ CREATE TABLE fornecedor (
   estado VARCHAR(50),
   cep VARCHAR(9)
 );
+
+CREATE INDEX idx_email on cliente(email);
+CREATE INDEX idx_produto ON produtos(nome, categoria_id, fornecedor_id);
+CREATE INDEX idx_categoria ON categorias(nome);
+CREATE INDEX idx_fornecedor ON fornecedor(cnpj, nome);
+CREATE INDEX idx_pedido ON pedidos(cliente_id, funcionario, data_pedido);
+CREATE INDEX idx_itens_do_pedido ON itens_pedido(pedido_id, produto_id);
+CREATE index idx_pagamento ON pagamento_id(pedido_id, status);
+CREATE INDEX idx_funcionario ON funcionario(cpf, email, nome);
+create INDEX idx_estoque ON estoque(produto_id);
 
 INSERT INTO cliente (id, nome, email, telefone)
 VALUES
