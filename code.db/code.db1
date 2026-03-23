@@ -21,6 +21,7 @@ CREATE TABLE produtos (
   descricao TEXT,
   data_cadastro DATE,
   marca VARCHAR(100),
+  FOREIGN KEY (fornecedor_id) REFERENCES fornecedor(id),
   FOREIGN KEY (categoria_id) REFERENCES categorias(id)
 );
 
@@ -83,11 +84,12 @@ CREATE TABLE forma_de_pagamento (
 CREATE TABLE pedidos (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   cliente_id INTEGER,
-  data_pedido INTEGER,
+  data_pedido DATE,
   pagamento_id INTEGER,
   status INTEGER,
   subtotal DECIMAL(6,2),
   frete DECIMAL(6,2),
+  FOREIGN KEY (status) REFERENCES status_pedido(id),
   FOREIGN KEY (cliente_id) REFERENCES cliente(id),
   FOREIGN KEY (pagamento_id) REFERENCES forma_de_pagamento(id)
 );
@@ -177,15 +179,19 @@ CREATE TABLE fornecedor (
   cep VARCHAR(9)
 );
 
-CREATE INDEX idx_email on cliente(email);
+CREATE INDEX idx_email ON cliente(email);
 CREATE INDEX idx_produto ON produtos(nome, categoria_id, fornecedor_id);
 CREATE INDEX idx_categoria ON categorias(nome);
-CREATE INDEX idx_fornecedor ON fornecedor(cnpj, nome);
-CREATE INDEX idx_pedido ON pedidos(cliente_id, funcionario, data_pedido);
+CREATE INDEX idx_fornecedor ON fornecedor(cnpj, nome_empresa);
+CREATE INDEX idx_pedido ON pedidos(cliente_id, pagamento_id, data_pedido);
 CREATE INDEX idx_itens_do_pedido ON itens_pedido(pedido_id, produto_id);
-CREATE index idx_pagamento ON pagamento_id(pedido_id, status);
-CREATE INDEX idx_funcionario ON funcionario(cpf, email, nome);
-create INDEX idx_estoque ON estoque(produto_id);
+CREATE INDEX idx_pagamento ON pedidos(pagamento_id, status);
+CREATE INDEX idx_funcionario ON funcionario(email, nome);
+CREATE INDEX idx_estoque ON estoque(produto_id);
+CREATE INDEX idx_compras ON compras(usuario_id, produto_id, data_pagamento);
+CREATE INDEX idx_avaliacao ON avaliacao(usuario_id, produto_id);
+CREATE INDEX idx_itens_compra ON itens_compra(compra_id, produto_id);
+CREATE INDEX idx_produto_cor ON filtro_de_cor(produto_id, cor);
 
 INSERT INTO cliente (id, nome, email, telefone)
 VALUES
@@ -222,12 +228,12 @@ VALUES
 ('Relógio');
 
 INSERT INTO produtos
-(nome, tamanho, categoria_id, cor, preco, marca, descricao, data_cadastro)
+(nome, tamanho, categoria_id, fornecedor_id, cor, preco, marca, descricao, data_cadastro)
 VALUES
-('Camisa_Masculina','M',1,'Preta',79.90,'Nike','camisa casual masculina','2026-03-01'),
-('Calça_Jeans_Masculina','42',2,'Azul',129.90,'Urban','calça jeans masculina','2026-01-21'),
-('Boné_Couro','U',3,'Marrom',79.90,'Urban','boné couro','2026-02-15'),
-('Relógio_Retro','38-40',4,'Chumbo',690.90,'RetroX','relógio estilo retrô','2026-01-10');
+('Camisa_Masculina','M',1,'1','Preta',79.90,'Nike','camisa casual masculina','2026-03-01'),
+('Calça_Jeans_Masculina','42',2,'1','Azul',129.90,'Urban','calça jeans masculina','2026-01-21'),
+('Boné_Couro','U',3,'1','Marrom',79.90,'Urban','boné couro','2026-02-15'),
+('Relógio_Retro','38-40',4,'1','Chumbo',690.90,'RetroX','relógio estilo retrô','2026-01-10');
 
 INSERT INTO cupons (id, codigo, desconto, validade)
 VALUES
@@ -286,12 +292,12 @@ VALUES
 (3,'Pix'),
 (4,'Boleto');
 
-INSERT INTO pedidos (cliente_id, pagamento_id, subtotal, frete)
+INSERT INTO pedidos (cliente_id, pagamento_id, data_pedidos, subtotal, frete)
 VALUES
-(1, 1, 79.90, 15.00),
-(2, 3, 299.90, 20.00),
-(3, 2, 129.90, 10.00),
-(4, 1, 690.90, 15.00);
+(1, 1,1, '2026-03-01', 79.90, 15.00),
+(2, 3,1, '2026-02-18', 299.90, 20.00),
+(3, 2,1, '2026-03-02', 129.90, 10.00),
+(4, 4,1, '2026-03-03', 690.90, 15.00);
 
 INSERT INTO filtro_de_cor (produto_id, cor)
 VALUES
@@ -324,47 +330,70 @@ VALUES
 ('Urban Fashion','23.456.789/0001-88','1133344455','vendas@urban.com','Rua das Indústrias 50','Campinas','SP','13010-100'),
 ('RetroX Relógios','34.567.890/0001-77','1145567788','suporte@retrox.com','Av. Central 200','Rio de Janeiro','RJ','20010-200');
 
-CREATE VIEW vw_pedido_completo AS
-SELECT
-  pe.id AS pedido_id,
+SELECT *
+FROM pedidos
+WHERE status = 'pendente';
 
-  (SELECT c.nome
-   FROM area_do_usuario c
-   WHERE c.cliente_id = pe.cliente_id) AS cliente_nome,
+SELECT id, subtotal, status
+FROM pedidos
+WHERE subtotal > 500;
 
-  (SELECT c.email
-   FROM area_do_usuario c
-   WHERE c.cliente_id = pe.cliente_id) AS cliente_email,
+SELECT *
+FROM pedidos
+WHERE data_pedido BETWEEN '2025-06-01' AND '2025-06-03';
 
-  (SELECT fp.tipo_de_pagamento
-   FROM forma_de_pagamento fp
-   WHERE fp.id = pe.pagamento_id) AS tipo_de_pagamento,
+SELECT *
+FROM pedidos
+WHERE cliente_id = 5;
 
-  (SELECT pr.nome
-   FROM produtos pr
-   JOIN itens_pedido ip2 ON pr.id = ip2.produto_id
-   WHERE ip2.pedido_id = pe.id
-   LIMIT 1) AS produto_nome,
+UPDATE pedidos
+SET status = 'entregue'
+WHERE id = 2;
 
-  (SELECT cat.nome
-   FROM categorias cat
-   JOIN produtos pr2 ON cat.id = pr2.categoria_id
-   JOIN itens_pedido ip3 ON pr2.id = ip3.produto_id
-   WHERE ip3.pedido_id = pe.id
-   LIMIT 1) AS categoria,
+UPDATE pedidos
+SET subtotal = 950.00
+WHERE id = 2;
 
-  (SELECT ip.quantidade
-   FROM itens_pedido ip
-   WHERE ip.pedido_id = pe.id
-   LIMIT 1) AS quantidade,
+UPDATE pedidos
+SET status = 'cancelado'
+WHERE status = 'pendente';
 
-  (SELECT ip.preco
-   FROM itens_pedido ip
-   WHERE ip.pedido_id = pe.id
-   LIMIT 1) AS preco,
+SELECT 
+p.nome,
+p.preco,
+c.nome AS categoria
+FROM produtos p
+JOIN categorias c
+ON p.categoria_id = c.id
+WHERE c.id = 3;
 
-  pe.subtotal,
-  pe.frete,
-  (pe.subtotal + pe.frete) AS pedido_total
-  
-FROM pedidos pe;
+SELECT 
+p.nome,
+p.cor,
+p.tamanho,
+e.quantidade
+FROM produtos p
+JOIN estoque e
+ON e.produto_id = p.id
+WHERE e.id 2;
+
+SELECT 
+p.nome,
+p.preco,
+f.nome_empresa,
+f.email
+FROM produtos p
+JOIN fornecedor f
+ON p.fornecedor_id = f.id
+WHERE f.id = 1;
+
+SELECT 
+p.id,
+p.subtotal,
+p.data_pedido,
+c.nome,
+c.email
+FROM pedidos p
+JOIN cliente c
+ON p.cliente_id = c.id
+WHERE c.id = 3;
