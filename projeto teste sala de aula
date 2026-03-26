@@ -181,8 +181,9 @@ CREATE TABLE fornecedor (
 
 CREATE TABLE tamanho (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  tamanho TEXT,
-  quantidade INTEGER
+  id_fornecedor INT,
+  tamanho VARCHAR(5),
+  quantidade VARCHAR(5)
 );
 
 CREATE INDEX idx_email ON cliente(email);
@@ -241,10 +242,13 @@ VALUES
 ('11','Camisa Social Listrada'),
 ('12','Calça Jeans Slim');
 
-INSERT INTO tamanho
-
-
-
+INSERT INTO tamanho (id, id_produto, tamanho, quantidade)
+VALUES
+(1,1,'P'
+(2,1,'M'
+(3,1,'G'
+(4,1,'GG'
+(
 
 INSERT INTO produtos
 (nome, categoria_id, fornecedor_id, cor, preco, marca, descricao, data_cadastro)
