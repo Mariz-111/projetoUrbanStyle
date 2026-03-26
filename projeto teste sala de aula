@@ -179,6 +179,12 @@ CREATE TABLE fornecedor (
   cep VARCHAR(9)
 );
 
+CREATE TABLE tamanho (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  tamanho TEXT,
+  quantidade INTEGER
+);
+
 CREATE INDEX idx_email ON cliente(email);
 CREATE INDEX idx_produto ON produtos(nome, categoria_id, fornecedor_id);
 CREATE INDEX idx_categoria ON categorias(nome);
@@ -222,18 +228,39 @@ VALUES
 
 INSERT INTO categorias (nome)
 VALUES
-('Camisa'),
-('Calça'),
-('Boné'),
-('Relógio');
+('1','Camisa Social Slim'),
+('2','Polo Premium'),
+('3','Calça Chino Slim'),
+('4','Blazer Estruturado'),
+('5','Cinto Couro Legítimo'),
+('6','Carteira Couro Slim'),
+('7','Relógio Analógico'),
+('8','Tênis Couro'),
+('9','Bermuda Cargo'),
+('10','Jaqueta Bomber'),
+('11','Camisa Social Listrada'),
+('12','Calça Jeans Slim');
+
+INSERT INTO tamanho
+
+
+
 
 INSERT INTO produtos
-(nome, tamanho, categoria_id, fornecedor_id, cor, preco, marca, descricao, data_cadastro)
+(nome, categoria_id, fornecedor_id, cor, preco, marca, descricao, data_cadastro)
 VALUES
-('Camisa_Masculina','M',1,'1','Preta',79.90,'Nike','camisa casual masculina','2026-03-01'),
-('Calça_Jeans_Masculina','42',2,'1','Azul',129.90,'Urban','calça jeans masculina','2026-01-21'),
-('Boné_Couro','U',3,'1','Marrom',79.90,'Urban','boné couro','2026-02-15'),
-('Relógio_Retro','38-40',4,'1','Chumbo',690.90,'RetroX','relógio estilo retrô','2026-01-10');
+('Camisa_Social_Slim','1',
+('Polo_Premium','2','2',
+('Calça_Chino_Slim','3','1',
+('Blazer_Estrutura','4','2',
+('Cinto_Couro_Legítimo','5','3',
+('Carteira_Couro_Slim','6','3',
+('Relógio_Analógico','7','3',
+('Tênis_Couro','8','1',
+('Bermuda_Cargo','9','1',
+('Jaqueta_Bomber','10','2',
+('Camisa_Social_Listrada','11','1',
+ 
 
 INSERT INTO cupons (id, codigo, desconto, validade)
 VALUES
@@ -324,11 +351,11 @@ VALUES
 ('Ana Souza','Vendedora',2500.00,'11991234567','ana@empresa.com','2020-03-15'),
 ('Bruno Lima','Estoquista',2200.00,'11999887766','bruno@empresa.com','2019-05-20');
 
-INSERT INTO fornecedor (nome_empresa, cnpj, telefone, email, endereco, cidade, estado, cep)
+INSERT INTO fornecedor (nome_empresa, fornecedor_id, cnpj, telefone, email, endereco, cidade, estado, cep)
 VALUES
-('Naike','12.345.678/0001-90','1134567890','contato@nike.com','Av. Industrial 100','São Paulo','SP','01010-000'),
-('Urban Fashion','23.456.789/0001-88','1133344455','vendas@urban.com','Rua das Indústrias 50','Campinas','SP','13010-100'),
-('RetroX Relógios','34.567.890/0001-77','1145567788','suporte@retrox.com','Av. Central 200','Rio de Janeiro','RJ','20010-200');
+('Ferreiros','1','12.345.678/0001-90','1134567890','contato@ferreios.com','Av. Industrial 100','São Paulo','SP','01010-000'),
+('Veltrade','2','23.456.789/0001-88','1133344455','vendas@veltrade.com','Rua das Indústrias 50','Campinas','SP','13010-100'),
+('SMK','3','34.567.890/0001-77','1145567788','suporte@smk.com','Av. Central 200','Rio de Janeiro','RJ','20010-200');
 
 SELECT *
 FROM pedidos
