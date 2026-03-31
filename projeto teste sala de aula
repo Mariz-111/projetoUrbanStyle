@@ -249,23 +249,21 @@ VALUES
 (3,1,'G','?'),
 (4,1,'GG','?');
 
-
 INSERT INTO produtos
 (nome, categoria_id, fornecedor_id, cor_id, preco, marca, descricao, data_cadastro)
 VALUES
-('Camisa_Social_Slim','1','1','1',79.90,'Ferreiros','?',
-('Polo_Premium','2','2',79.90,'Veltrade','?',
-('Calça_Chino_Slim','3','1',79.90,'Ferreiros','?',
-('Blazer_Estrutura','4','2',79.90,'Veltrade','?',
-('Cinto_Couro_Legítimo','5','3',79.90,'SMK','?',
-('Carteira_Couro_Slim','6','3',79.90,'SMK','?',
-('Relógio_Analógico','7','3',79.90,'SMK','?',
-('Tênis_Couro','8','1',79.90,'Ferreiros','?',
-('Bermuda_Cargo','9','1',79.90,'Ferreiros','?',
-('Jaqueta_Bomber','10','2',79.90,'Veltrade','?',
-('Camisa_Social_Listrada','11','1',79.90,'Ferreiros','?',
+('Camisa_Social_Slim','1','1','1',79.90,'Ferreiros','?','?'),
+('Polo_Premium','2','2',79.90,'Veltrade','?','?'),
+('Calça_Chino_Slim','3','1',79.90,'Ferreiros','?','?'),
+('Blazer_Estrutura','4','2',79.90,'Veltrade','?','?'),
+('Cinto_Couro_Legítimo','5','3',79.90,'SMK','?','?'),
+('Carteira_Couro_Slim','6','3',79.90,'SMK','?','?'),
+('Relógio_Analógico','7','3',79.90,'SMK','?','?'),
+('Tênis_Couro','8','1',79.90,'Ferreiros','?','?'),
+('Bermuda_Cargo','9','1',79.90,'Ferreiros','?','?'),
+('Jaqueta_Bomber','10','2',79.90,'Veltrade','?','?'),
+('Camisa_Social_Listrada','11','1',79.90,'Ferreiros','?','?');
  
-
 INSERT INTO cupons (id, codigo, desconto, validade)
 VALUES
 (1, 'DESC10', 10.00, '2026-12-31'),
