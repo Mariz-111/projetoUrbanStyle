@@ -600,7 +600,7 @@ WHERE c.id = 3;
 
 SELECT 
 p.nome,
-p.cor,
+f.cor,
 p.tamanho,
 e.quantidade
 FROM produtos p
