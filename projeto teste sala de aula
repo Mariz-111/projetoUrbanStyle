@@ -572,7 +572,7 @@ WHERE subtotal > 500;
 
 SELECT *
 FROM pedidos
-WHERE data_pedido BETWEEN '2025-03-01' AND '2025-03-03';
+WHERE data_pedido BETWEEN '2026-03-01' AND '2026-03-03';
 
 SELECT *
 FROM pedidos
