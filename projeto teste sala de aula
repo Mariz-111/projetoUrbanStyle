@@ -85,7 +85,7 @@ CREATE TABLE area_do_usuario (
   telefone VARCHAR(13),
   cpf TEXT UNIQUE NOT NULL,
   email TEXT UNIQUE NOT NULL,
-  senha TEXT
+  senha TEXT,
   endereco VARCHAR(200),
   cep VARCHAR(9),
   numero_de_casa VARCHAR(10),
@@ -122,7 +122,7 @@ CREATE TABLE pedidos (
   status_id INTEGER,
   subtotal DECIMAL(6,2),
   frete DECIMAL(6,2),
-  FOREIGN KEY (status) REFERENCES status_pedido(id),
+  FOREIGN KEY (status_id) REFERENCES status_pedido(id),
   FOREIGN KEY (cliente_id) REFERENCES cliente(id),
   FOREIGN KEY (pagamento_id) REFERENCES forma_de_pagamento(id)
 );
@@ -221,7 +221,7 @@ CREATE TABLE tamanho (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   produto_id INT,
   tamanho VARCHAR(5),
-  quantidade INT
+  quantidade INT,
   FOREIGN KEY (produto_id) REFERENCES produtos(id)
 );
 
@@ -235,14 +235,14 @@ CREATE INDEX idx_categoria ON categorias(nome);
 CREATE INDEX idx_fornecedor ON fornecedor(cnpj, nome_empresa);
 CREATE INDEX idx_pedido ON pedidos(cliente_id, pagamento_id, data_pedido);
 CREATE INDEX idx_itens_do_pedido ON itens_pedido(pedido_id, produto_id);
-CREATE INDEX idx_pagamento ON pedidos(pagamento_id, status);
+CREATE INDEX idx_pagamento ON pedidos(pagamento_id, status_id);
 CREATE INDEX idx_funcionario ON funcionario(email, nome);
 CREATE INDEX idx_estoque ON estoque(produto_id);
 CREATE INDEX idx_compras ON compras(usuario_id, produto_id, data_pagamento);
 CREATE INDEX idx_avaliacao ON avaliacao(usuario_id, produto_id);
 CREATE INDEX idx_itens_compra ON itens_compra(compra_id, produto_id);
 CREATE INDEX idx_produto_cor ON filtro_de_cor(produto_id, cor);
-CREATE INDEX idx_status_pedido ON pedidos(status);
+CREATE INDEX idx_status_pedido ON pedidos(status_id);
 CREATE INDEX idx_itens_produto ON itens_pedido(produto_id);
 CREATE INDEX idx_produto_preco ON produtos(preco);
 CREATE INDEX idx_usuario_email ON area_do_usuario(email);
@@ -382,7 +382,7 @@ VALUES
 
 
 --PEDIDOS
-INSERT INTO pedidos (cliente_id, pagamento_id, status, data_pedido, subtotal, frete)
+INSERT INTO pedidos (cliente_id, pagamento_id, status_id, data_pedido, subtotal, frete)
 VALUES
 (1, 1, 1, '2026-03-01', 79.90, 15.00),
 (2, 3, 1, '2026-03-01', 299.90, 20.00),
@@ -579,7 +579,7 @@ FROM pedidos
 WHERE cliente_id = 5;
 
 UPDATE pedidos
-SET status = 5
+SET status_id = 5
 WHERE id = 2;
 
 UPDATE pedidos
@@ -587,8 +587,8 @@ SET subtotal = 950.00
 WHERE id = 2;
 
 UPDATE pedidos
-SET status = 5
-WHERE status = 1;
+SET status_id = 5
+WHERE status_id = 1;
 
 SELECT 
 p.nome,
