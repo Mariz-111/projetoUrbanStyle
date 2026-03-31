@@ -109,7 +109,7 @@ CREATE TABLE itens_pedido (
   pedido_id INTEGER,
   produto_id INTEGER,
   quantidade INT,
-  preco DECIMAL(6,2),
+  preco DECIMAL(10,2),
   FOREIGN KEY (pedido_id) REFERENCES pedidos(id),
   FOREIGN KEY (produto_id) REFERENCES produtos(id)
 );
@@ -220,6 +220,7 @@ CREATE INDEX idx_avaliacao ON avaliacao(usuario_id, produto_id);
 CREATE INDEX idx_itens_compra ON itens_compra(compra_id, produto_id);
 CREATE INDEX idx_produto_cor ON filtro_de_cor(produto_id, cor);
 
+--CLIENTE
 INSERT INTO cliente (id, nome, email, telefone)
 VALUES
 (1,'Francisco', 'francisco@gmail.com', '12345678901'),
@@ -233,7 +234,8 @@ VALUES
 (9,'Fernando','fernando@gmail.com', '85274196300'),
 (10,'Maria','maria@email.com', '96385274100');
 
-INSERT INTO categorias (categoria_id,nome)
+--CATEGORIA
+INSERT INTO categorias (id,nome)
 VALUES
 ('1','Camisa Social Slim'),
 ('2','Polo Premium'),
@@ -248,8 +250,9 @@ VALUES
 ('11','Camisa Social Listrada'),
 ('12','Calça Jeans Slim');
 
+--PRODUTOS
 INSERT INTO produtos
-(nome, categoria_id, fornecedor_id, cor_id, preco, marca, descricao, data_cadastro)
+(nome, categoria_id, fornecedor_id, cor, preco, marca, descricao, data_cadastro)
 VALUES
 ('Camisa_Social_Slim','1','1','1',79.90,'Ferreiros','?','?'),
 ('Polo_Premium','2','2',79.90,'Veltrade','?','?'),
@@ -263,6 +266,7 @@ VALUES
 ('Jaqueta_Bomber','10','2',79.90,'Veltrade','?','?'),
 ('Camisa_Social_Listrada','11','1',79.90,'Ferreiros','?','?');
 
+--CUPONS
 INSERT INTO cupons (id, codigo, desconto, validade)
 VALUES
 (1, 'DESC10', 10.00, '2026-12-31'),
@@ -272,6 +276,7 @@ VALUES
 (5, 'FEVEREIRO26', 26.00, '2026-02-28'),
 (6, 'PIX10', 10.00, '2026-12-31');
 
+--COMPRA
 INSERT INTO compras (usuario_id, produto_id, metodo_pagamento, data_pagamento, status_pagamento, endereco_entrega, status_entrega, frete, cupom_id, quantidade, valor_total)
 VALUES
 (1,1,'Cartão de Crédito','2026-01-10','Pago','Rua das flores, 123','Em processamento',25.00,1,1,94.90),
@@ -286,6 +291,7 @@ VALUES
 (10,3,'PIX','2026-02-15','Aguardando','Rua Jardim Dredes,11','Em processamento',12.00,6,1,91.90),
 (10,3,'Boleto','2026-02-16','Pago','Praça da Terra, 11','Em processamento',12.00,NULL,1,91.90);
 
+--USUARIO
 INSERT INTO area_do_usuario
 (id, cliente_id, nome, localizacao, telefone, cpf, email, senha, endereco, cep, numero_de_casa)
 VALUES
@@ -300,7 +306,8 @@ VALUES
 (9,9,'Juliana Costa','Bahia', '11990123456', '96385274100', 'juliana@gmail.com', 'juli2024', 'Rua Haddock Lobo', '01414000','756'),
 (10,10,'Rafael Gomes','Bahia', '11998989898', '15935748600', 'rafael@gmail.com', 'rafa321', 'Av. Rebouças', '05402000','75');
 
-INSERT INTO estoque (categoria_id, quantidade)
+--ESTOQUE 
+INSERT INTO estoque (produto_id, quantidade)
 VALUES
 (1, ?),
 (2, ?),
@@ -314,21 +321,24 @@ VALUES
 (10, ?),
 (11, ?),
 (12, ?);
-  
-  INSERT INTO forma_de_pagamento (id, tipo_de_pagamento)
+   
+--PAGAMENTO
+INSERT INTO forma_de_pagamento (id, tipo_de_pagamento)
 VALUES
 (1,'Cartão de Crédito'),
 (2,'Cartão de Débito'),
 (3,'Pix'),
 (4,'Boleto');
 
-INSERT INTO pedidos (cliente_id, pagamento_id, data_pedidos, subtotal, frete)
+--PEDIDOS
+INSERT INTO pedido (cliente_id, pagamento_id, data_pedidos, subtotal, frete)
 VALUES
 (1, 1,1, '2026-03-01', 79.90, 15.00),
 (2, 3,1, '2026-02-18', 299.90, 20.00),
 (3, 2,1, '2026-03-02', 129.90, 10.00),
 (4, 4,1, '2026-03-03', 690.90, 15.00); 
 
+--ITENS PEDIDOS
 INSERT INTO itens_pedido (pedido_id, produto_id, quantidade, preco)
 VALUES
 (1, 1, 1, 79.90),
@@ -336,6 +346,7 @@ VALUES
 (3, 3, 1, 129.90),
 (4, 4, 1, 690.90); 
 
+--COR
 INSERT INTO filtro_de_cor (produto_id, cor)
 VALUES
 (1,'Preto'),
@@ -343,7 +354,55 @@ VALUES
 (3,'Preto'),
 (4,'Azul');
 
+--ITENS COMPRA
 INSERT INTO itens_compra ( 
+  
+--AVALIACAO
+INSERT INTO avaliacao (usuario_id, produto_id, nota, comentario, data_avaliacao)
+VALUES
+(1,1,5,'Produto excelente','2026-03-10'),
+(2,1,4,'Muito bom','2026-03-11'),
+(3,2,3,'Produto ok','2026-03-12');
+  
+--STATUS PEDIDOS
+INSERT INTO status_pedidos (
+
+--ESTOQUE RELATORIO
+INSERT INTO estoque_relatorio
+(produto_id, entrada_de_mercadoria, saida_para_troca, saida_venda, registro_movimentacao)
+VALUES
+(1, '2026-01-10', NULL, '2026-01-12', 'Venda realizada'),
+(2, '2026-01-12', NULL, NULL, 'Produto está no fornecedor'),
+(3, '2026-01-15', '2026-02-21', NULL, 'Produto enviado para troca'),
+(4, '2026-01-16', NULL, '2026-01-18', 'Venda realizada'),
+(3, '2026-01-18', NULL, NULL, 'Produto está no fornecedor'),
+(1, '2026-01-11', NULL, '2026-02-15', 'Venda realizada'),
+(2, '2026-03-12', NULL, '2026-03-18', 'Venda realizada'),
+(3, '2026-05-19', '2026-05-20', NULL, 'Produto enviado para troca'),
+(4, '2026-07-20', '2026-07-22', '2026-07-24', 'Venda realizada'),
+(2, '2026-09-18', NULL, NULL, 'Produto está no fornecedor');
+  
+--ADM
+INSERT INTO usuario_adm (email, senha, estoque_id, estoque_relatorio_id)
+VALUES
+('eduardoadmin0@urbanstyle.com', 'adm12345', 1, 1),
+('eduardoadmin1@urbanstyle.com', 'adm54321', 2, 2);
+
+-- FUNCIONARIO
+INSERT INTO funcionario (nome, cargo, salario, telefone, email, data_contratacao)
+VALUES
+('Ricardo Santos','Gerente',4500.00,'11987654321','ricardo@empresa.com','2018-01-10'),
+('Ana Souza','Vendedora',2500.00,'11991234567','ana@empresa.com','2020-03-15'),
+('Bruno Lima','Estoquista',2200.00,'11999887766','bruno@empresa.com','2019-05-20');
+  
+-- FORNECEDOR
+INSERT INTO fornecedor (nome_empresa, fornecedor_id, cnpj, telefone, email, endereco, cidade, estado, cep)
+VALUES
+('Ferreiros','1','12.345.678/0001-90','1134567890','contato@ferreios.com','Av. Industrial 100','São Paulo','SP','01010-000'),
+('Veltrade','2','23.456.789/0001-88','1133344455','vendas@veltrade.com','Rua das Indústrias 50','Campinas','SP','13010-100'),
+('SMK','3','34.567.890/0001-77','1145567788','suporte@smk.com','Av. Central 200','Rio de Janeiro','RJ','20010-200');
+
+--TAMANHO  
 INSERT INTO tamanho (id, categoria_id, tamanho, quantidade)
 VALUES
 
@@ -425,27 +484,6 @@ VALUES
 
 
 
-INSERT INTO avaliacao (usuario_id, produto_id, nota, comentario, data_avaliacao)
-VALUES
-(1,1,5,'Produto excelente','2026-03-10'),
-(2,1,4,'Muito bom','2026-03-11'),
-(3,2,3,'Produto ok','2026-03-12');
-
-
-
-INSERT INTO estoque_relatorio
-(produto_id, entrada_de_mercadoria, saida_para_troca, saida_venda, registro_movimentacao)
-VALUES
-(1, '2026-01-10', NULL, '2026-01-12', 'Venda realizada'),
-(2, '2026-01-12', NULL, NULL, 'Produto está no fornecedor'),
-(3, '2026-01-15', '2026-02-21', NULL, 'Produto enviado para troca'),
-(4, '2026-01-16', NULL, '2026-01-18', 'Venda realizada'),
-(3, '2026-01-18', NULL, NULL, 'Produto está no fornecedor'),
-(1, '2026-01-11', NULL, '2026-02-15', 'Venda realizada'),
-(2, '2026-03-12', NULL, '2026-03-18', 'Venda realizada'),
-(3, '2026-05-19', '2026-05-20', NULL, 'Produto enviado para troca'),
-(4, '2026-07-20', '2026-07-22', '2026-07-24', 'Venda realizada'),
-(2, '2026-09-18', NULL, NULL, 'Produto está no fornecedor');
 
 
 
@@ -454,22 +492,15 @@ VALUES
 
 
 
-INSERT INTO usuario_adm (email, senha, estoque_id, estoque_relatorio_id)
-VALUES
-('eduardoadmin0@urbanstyle.com', 'adm12345', 1, 1),
-('eduardoadmin1@urbanstyle.com', 'adm54321', 2, 2);
 
-INSERT INTO funcionario (nome, cargo, salario, telefone, email, data_contratacao)
-VALUES
-('Ricardo Santos','Gerente',4500.00,'11987654321','ricardo@empresa.com','2018-01-10'),
-('Ana Souza','Vendedora',2500.00,'11991234567','ana@empresa.com','2020-03-15'),
-('Bruno Lima','Estoquista',2200.00,'11999887766','bruno@empresa.com','2019-05-20');
 
-INSERT INTO fornecedor (nome_empresa, fornecedor_id, cnpj, telefone, email, endereco, cidade, estado, cep)
-VALUES
-('Ferreiros','1','12.345.678/0001-90','1134567890','contato@ferreios.com','Av. Industrial 100','São Paulo','SP','01010-000'),
-('Veltrade','2','23.456.789/0001-88','1133344455','vendas@veltrade.com','Rua das Indústrias 50','Campinas','SP','13010-100'),
-('SMK','3','34.567.890/0001-77','1145567788','suporte@smk.com','Av. Central 200','Rio de Janeiro','RJ','20010-200');
+
+
+
+
+
+
+
 
 SELECT *
 FROM pedidos
