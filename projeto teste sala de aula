@@ -9,11 +9,28 @@ CREATE TABLE cliente (
   telefone TEXT
 );
 
+
 --CATEGORIA
 CREATE TABLE categorias (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   nome VARCHAR(100)
 );
+
+
+--FORNECEDOR
+CREATE TABLE fornecedor (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  nome_empresa VARCHAR(100),
+  fornecedor_id INTEGER,
+  cnpj VARCHAR(18),
+  telefone VARCHAR(15),
+  email VARCHAR(100),
+  endereco VARCHAR(200),
+  cidade VARCHAR(100),
+  estado VARCHAR(50),
+  cep VARCHAR(9),
+);
+
 
 --PRODUTOS
 CREATE TABLE produtos (
@@ -31,6 +48,7 @@ CREATE TABLE produtos (
   FOREIGN KEY (categoria_id) REFERENCES categorias(id)
 );
 
+
 --CUPONS
 CREATE TABLE cupons (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -38,6 +56,7 @@ CREATE TABLE cupons (
   desconto DECIMAL(5,2),
   validade DATE
 );
+
 
 --COMPRAS
 CREATE TABLE compras (
@@ -58,6 +77,7 @@ CREATE TABLE compras (
   FOREIGN KEY (cupom_id) REFERENCES cupons(id)
 );
 
+
 --USUARIO
 CREATE TABLE area_do_usuario (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -74,6 +94,7 @@ CREATE TABLE area_do_usuario (
   FOREIGN KEY (cliente_id) REFERENCES cliente(id)
 );
 
+
 --ESTOQUE
 CREATE TABLE estoque (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -86,11 +107,13 @@ CREATE TABLE estoque (
   FOREIGN KEY (produto_id) REFERENCES produtos(id)
 );
 
+
 --PAGAMENTO
 CREATE TABLE forma_de_pagamento (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   tipo_de_pagamento VARCHAR(20)
 );
+
 
 --PEDIDOS
 CREATE TABLE pedidos (
@@ -106,6 +129,7 @@ CREATE TABLE pedidos (
   FOREIGN KEY (pagamento_id) REFERENCES forma_de_pagamento(id)
 );
 
+
 --ITENS PEDIDOS
 CREATE TABLE itens_pedido (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -117,6 +141,7 @@ CREATE TABLE itens_pedido (
   FOREIGN KEY (produto_id) REFERENCES produtos(id)
 );
 
+
 --COR
 CREATE TABLE filtro_de_cor (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -125,6 +150,7 @@ CREATE TABLE filtro_de_cor (
   cor_id  INTEGER,
   FOREIGN KEY (produto_id) REFERENCES produtos(id)
 );
+
 
 --ITENS COMPRA
 CREATE TABLE itens_compra (
@@ -136,6 +162,7 @@ CREATE TABLE itens_compra (
   FOREIGN KEY (compra_id) REFERENCES compras(id),
   FOREIGN KEY (produto_id) REFERENCES produtos(id)
 );
+
 
 --AVALIAÇÃO
 CREATE TABLE avaliacao (
@@ -152,8 +179,9 @@ CREATE TABLE avaliacao (
 --STATUS PEDIDOS
 CREATE TABLE status_pedido (
   id INTEGER PRIMARY KEY,
-  codigo TEXT UNIQUE NOT NULL CHECK (codigo IN ('pendente', 'pago', 'separacao', 'enviado', 'entregue', 'cancelado'))
+  codigo TEXT UNIQUE NOT NULL CHECK (codigo IN ('pendente', 'pago', 'enviado', 'entregue', 'cancelado'))
 );
+
 
 --RELATORIO DE ESTOQUE
 CREATE TABLE estoque_relatorio (
@@ -166,6 +194,7 @@ CREATE TABLE estoque_relatorio (
   FOREIGN KEY (produto_id) REFERENCES produtos(id)
 );
 
+
 --ADM
 CREATE TABLE usuario_adm (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -176,6 +205,7 @@ CREATE TABLE usuario_adm (
   FOREIGN KEY (estoque_id) REFERENCES estoque(id),
   FOREIGN KEY (estoque_relatorio_id) REFERENCES estoque_relatorio(id)
 );
+
 
 --FUNCIONARIO
 CREATE TABLE funcionario (
@@ -188,19 +218,6 @@ CREATE TABLE funcionario (
   data_contratacao DATE
 );
 
---FORNECEDOR
-CREATE TABLE fornecedor (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  nome_empresa VARCHAR(100),
-  fornecedor_id INTEGER,
-  cnpj VARCHAR(18),
-  telefone VARCHAR(15),
-  email VARCHAR(100),
-  endereco VARCHAR(200),
-  cidade VARCHAR(100),
-  estado VARCHAR(50),
-  cep VARCHAR(9),
-);
 
 --TAMANHO
 CREATE TABLE tamanho (
@@ -269,6 +286,14 @@ VALUES
 ('10','Jaqueta Bomber'),
 ('11','Camisa Social Listrada'),
 ('12','Calça Jeans Slim');
+
+
+-- FORNECEDOR
+INSERT INTO fornecedor (nome_empresa, fornecedor_id, cnpj, telefone, email, endereco, cidade, estado, cep)
+VALUES
+('Ferreiros','1','12.345.678/0001-90','1134567890','contato@ferreios.com','Av. Industrial 100','São Paulo','SP','01010-000'),
+('Veltrade','2','23.456.789/0001-88','1133344455','vendas@veltrade.com','Rua das Indústrias 50','Campinas','SP','13010-100'),
+('SMK','3','34.567.890/0001-77','1145567788','suporte@smk.com','Av. Central 200','Rio de Janeiro','RJ','20010-200');
 
 
 --PRODUTOS
@@ -359,14 +384,22 @@ VALUES
 
 
 --PEDIDOS
-INSERT INTO pedidos (cliente_id, pagamento_id, data_pedido, subtotal, frete)
+INSERT INTO pedidos (cliente_id, pagamento_id, status, data_pedido, subtotal, frete)
 VALUES
 (1, 1, 1, '2026-03-01', 79.90, 15.00),
-(2, 3, 1, '2026-02-18', 299.90, 20.00),
+(2, 3, 1, '2026-03-01', 299.90, 20.00),
 (3, 2, 1, '2026-03-02', 129.90, 10.00),
-(4, 4, 1, '2026-03-03', 690.90, 15.00); 
-
-
+(4, 4, 1, '2026-03-02', 690.90, 15.00); 
+(5, 3, 1, '2026-03-03', 79.90, 12.00), 
+(6, 2, 1, '2026-03-04', 79.90, 13.00),
+(7, 3, 1, '2026-03-06', 79.90, 10.00),
+(8, 3, 1, '2026-03-09', 79.90, 10.00),
+(9, 2, 1, '2026-03-11', 79.90, 12.00),
+(10, 3, 1, '2026-03-12', 79.90, 10.00),
+(11, 1, 1, '2026-03-14', 79.90, 13.00),
+(12, 3, 1, '2026-03-16', 79.90, 12.00),
+  
+  
 --ITENS PEDIDOS
 INSERT INTO itens_pedido (pedido_id, produto_id, quantidade, preco)
 VALUES
@@ -388,7 +421,7 @@ VALUES
 --ITENS COMPRA
 INSERT INTO itens_compra (compra_id, produto_id, quantidade, preco_unitario)
 VALUES 
-(
+(1, 1, 1, 79.90),
 (
 (  
 (  
@@ -451,16 +484,8 @@ VALUES
 ('Bruno Lima','Estoquista',2200.00,'11999887766','bruno@empresa.com','2019-05-20');
   
   
--- FORNECEDOR
-INSERT INTO fornecedor (nome_empresa, fornecedor_id, cnpj, telefone, email, endereco, cidade, estado, cep)
-VALUES
-('Ferreiros','1','12.345.678/0001-90','1134567890','contato@ferreios.com','Av. Industrial 100','São Paulo','SP','01010-000'),
-('Veltrade','2','23.456.789/0001-88','1133344455','vendas@veltrade.com','Rua das Indústrias 50','Campinas','SP','13010-100'),
-('SMK','3','34.567.890/0001-77','1145567788','suporte@smk.com','Av. Central 200','Rio de Janeiro','RJ','20010-200');
-
-  
 --TAMANHO  
-INSERT INTO tamanho (id, produto_id, tamanho, quantidade)
+INSERT INTO tamanho (produto_id, produto_id, tamanho, quantidade)
 VALUES
 --Camisa Social Slim
 (1,1,'P','?'),
@@ -556,7 +581,7 @@ FROM pedidos
 WHERE cliente_id = 5;
 
 UPDATE pedidos
-SET status = 'entregue'
+SET status = 5
 WHERE id = 2;
 
 UPDATE pedidos
