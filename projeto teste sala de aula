@@ -192,6 +192,7 @@ CREATE TABLE funcionario (
 CREATE TABLE fornecedor (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   nome_empresa VARCHAR(100),
+  fornecedor_id INTEGER,
   cnpj VARCHAR(18),
   telefone VARCHAR(15),
   email VARCHAR(100),
@@ -252,6 +253,7 @@ VALUES
 (9,'Fernando','fernando@gmail.com', '85274196300'),
 (10,'Maria','maria@email.com', '96385274100');
 
+
 --CATEGORIA
 INSERT INTO categorias (id,nome)
 VALUES
@@ -268,22 +270,24 @@ VALUES
 ('11','Camisa Social Listrada'),
 ('12','Calça Jeans Slim');
 
+
 --PRODUTOS
 INSERT INTO produtos
 (nome, categoria_id, fornecedor_id, cor, preco, marca, descricao, data_cadastro)
 VALUES
-('Camisa_Social_Slim', 1, 1, 'preto', 79.90, 'Ferreiros', '?', '?'),
-('Polo_Premium', 2, 2, 79.90, 'Veltrade', '?', '?'),
-('Calça_Chino_Slim', 3, 1, 79.90, 'Ferreiros', '?', '?'),
-('Blazer_Estrutura', 4, 2, 79.90, 'Veltrade', '?', '?'),
-('Cinto_Couro_Legítimo', 5, 3, 79.90, 'SMK', '?', '?'),
-('Carteira_Couro_Slim', 6, 3, 79.90, 'SMK', '?', '?'),
-('Relógio_Analógico', 7, 3, 79.90, 'SMK', '?', '?'),
-('Tênis_Couro', 8, 1, 79.90, 'Ferreiros', '?', '?'),
-('Bermuda_Cargo', 9, 1, 79.90, 'Ferreiros', '?', '?'),
-('Jaqueta_Bomber', 10, 2, 79.90, 'Veltrade', '?', '?'),
-('Camisa_Social_Listrada',11 ,1, 79.90, 'Ferreiros', '?', '?'),
-('Calça_Jeans_Slim', 12, 1, 79.90, 'Ferreiros', '?', '?');
+('Camisa_Social_Slim', 1, 1, '?', 79.90, 'Ferreiros', '?', '?'),
+('Polo_Premium', 2, 2, 79.90, '?', 'Veltrade', '?', '?'),
+('Calça_Chino_Slim', 3, 1, 79.90, '?', 'Ferreiros', '?', '?'),
+('Blazer_Estrutura', 4, 2, 79.90, '?', 'Veltrade', '?', '?'),
+('Cinto_Couro_Legítimo', 5, 3, 79.90, '?', 'SMK', '?', '?'),
+('Carteira_Couro_Slim', 6, 3, 79.90, '?', 'SMK', '?', '?'),
+('Relógio_Analógico', 7, 3, 79.90, '?', 'SMK', '?', '?'),
+('Tênis_Couro', 8, 1, 79.90, '?', 'Ferreiros', '?', '?'),
+('Bermuda_Cargo', 9, 1, 79.90, '?', 'Ferreiros', '?', '?'),
+('Jaqueta_Bomber', 10, 2, 79.90, '?', 'Veltrade', '?', '?'),
+('Camisa_Social_Listrada',11 ,1, 79.90, '?', 'Ferreiros', '?', '?'),
+('Calça_Jeans_Slim', 12, 1, 79.90, '?', 'Ferreiros', '?', '?');
+
 
 --CUPONS
 INSERT INTO cupons (id, codigo, desconto, validade)
@@ -294,6 +298,7 @@ VALUES
 (4, 'DESC30', 30.00, '2026-12-31'),
 (5, 'FEVEREIRO26', 26.00, '2026-02-28'),
 (6, 'PIX10', 10.00, '2026-12-31');
+
 
 --COMPRA
 INSERT INTO compras (usuario_id, produto_id, metodo_pagamento, data_pagamento, status_pagamento, endereco_entrega, status_entrega, frete, cupom_id, quantidade, valor_total)
@@ -310,6 +315,7 @@ VALUES
 (10,3,'PIX','2026-02-15','Aguardando','Rua Jardim Dredes,11','Em processamento',12.00,6,1,91.90),
 (10,3,'Boleto','2026-02-16','Pago','Praça da Terra, 11','Em processamento',12.00,NULL,1,91.90);
 
+
 --USUARIO
 INSERT INTO area_do_usuario
 (id, cliente_id, nome, localizacao, telefone, cpf, email, senha, endereco, cep, numero_de_casa)
@@ -324,6 +330,7 @@ VALUES
 (8,8,'Diego Fernandes','Bahia', '11991239876', '85274196300', 'diego@gmail.com', 'diego789', 'Rua Consolação', '01302000','167'),
 (9,9,'Juliana Costa','Bahia', '11990123456', '96385274100', 'juliana@gmail.com', 'juli2024', 'Rua Haddock Lobo', '01414000','756'),
 (10,10,'Rafael Gomes','Bahia', '11998989898', '15935748600', 'rafael@gmail.com', 'rafa321', 'Av. Rebouças', '05402000','75');
+
 
 --ESTOQUE 
 INSERT INTO estoque (produto_id, quantidade)
@@ -341,6 +348,7 @@ VALUES
 (11, ?),
 (12, ?);
    
+   
 --PAGAMENTO
 INSERT INTO forma_de_pagamento (id, tipo_de_pagamento)
 VALUES
@@ -349,13 +357,15 @@ VALUES
 (3,'Pix'),
 (4,'Boleto');
 
+
 --PEDIDOS
-INSERT INTO pedido (cliente_id, pagamento_id, data_pedidos, subtotal, frete)
+INSERT INTO pedidos (cliente_id, pagamento_id, data_pedido, subtotal, frete)
 VALUES
-(1, 1,1, '2026-03-01', 79.90, 15.00),
-(2, 3,1, '2026-02-18', 299.90, 20.00),
-(3, 2,1, '2026-03-02', 129.90, 10.00),
-(4, 4,1, '2026-03-03', 690.90, 15.00); 
+(1, 1, 1, '2026-03-01', 79.90, 15.00),
+(2, 3, 1, '2026-02-18', 299.90, 20.00),
+(3, 2, 1, '2026-03-02', 129.90, 10.00),
+(4, 4, 1, '2026-03-03', 690.90, 15.00); 
+
 
 --ITENS PEDIDOS
 INSERT INTO itens_pedido (pedido_id, produto_id, quantidade, preco)
@@ -365,6 +375,7 @@ VALUES
 (3, 3, 1, 129.90),
 (4, 4, 1, 690.90); 
 
+
 --COR
 INSERT INTO filtro_de_cor (produto_id, cor)
 VALUES
@@ -373,8 +384,24 @@ VALUES
 (3,'Preto'),
 (4,'Azul');
 
+
 --ITENS COMPRA
-INSERT INTO itens_compra ( 
+INSERT INTO itens_compra (compra_id, produto_id, quantidade, preco_unitario)
+VALUES 
+(
+(
+(  
+(  
+(  
+(  
+(  
+(  
+(  
+(  
+(  
+( 
+(  
+  
   
 --AVALIACAO
 INSERT INTO avaliacao (usuario_id, produto_id, nota, comentario, data_avaliacao)
@@ -383,9 +410,16 @@ VALUES
 (2,1,4,'Muito bom','2026-03-11'),
 (3,2,3,'Produto ok','2026-03-12');
   
+  
 --STATUS PEDIDOS
-INSERT INTO status_pedidos (
+INSERT INTO status_pedido (id, codigo) VALUES
+(1, 'pendente'),
+(2, 'pago'),  
+(3, 'enviado'),  
+(4, 'entregue'),
+(5, 'cancelado');
 
+  
 --ESTOQUE RELATORIO
 INSERT INTO estoque_relatorio
 (produto_id, entrada_de_mercadoria, saida_para_troca, saida_venda, registro_movimentacao)
@@ -401,18 +435,21 @@ VALUES
 (4, '2026-07-20', '2026-07-22', '2026-07-24', 'Venda realizada'),
 (2, '2026-09-18', NULL, NULL, 'Produto está no fornecedor');
   
+  
 --ADM
 INSERT INTO usuario_adm (email, senha, estoque_id, estoque_relatorio_id)
 VALUES
 ('eduardoadmin0@urbanstyle.com', 'adm12345', 1, 1),
 ('eduardoadmin1@urbanstyle.com', 'adm54321', 2, 2);
 
+  
 -- FUNCIONARIO
 INSERT INTO funcionario (nome, cargo, salario, telefone, email, data_contratacao)
 VALUES
 ('Ricardo Santos','Gerente',4500.00,'11987654321','ricardo@empresa.com','2018-01-10'),
 ('Ana Souza','Vendedora',2500.00,'11991234567','ana@empresa.com','2020-03-15'),
 ('Bruno Lima','Estoquista',2200.00,'11999887766','bruno@empresa.com','2019-05-20');
+  
   
 -- FORNECEDOR
 INSERT INTO fornecedor (nome_empresa, fornecedor_id, cnpj, telefone, email, endereco, cidade, estado, cep)
@@ -421,10 +458,10 @@ VALUES
 ('Veltrade','2','23.456.789/0001-88','1133344455','vendas@veltrade.com','Rua das Indústrias 50','Campinas','SP','13010-100'),
 ('SMK','3','34.567.890/0001-77','1145567788','suporte@smk.com','Av. Central 200','Rio de Janeiro','RJ','20010-200');
 
+  
 --TAMANHO  
 INSERT INTO tamanho (id, categoria_id, tamanho, quantidade)
 VALUES
-
 --Camisa Social Slim
 (1,1,'P','?'),
 (2,1,'M','?'),
@@ -502,8 +539,9 @@ VALUES
   
   
 SELECT *
-FROM pedidos
-WHERE status = 'pendente';
+FROM pedidos p
+JOIN status_pedido s ON p.status = s.id
+WHERE s.codigo = 'pendente';
 
 SELECT id, subtotal, status
 FROM pedidos
