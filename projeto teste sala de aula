@@ -85,7 +85,7 @@ CREATE TABLE area_do_usuario (
   telefone VARCHAR(13),
   cpf TEXT UNIQUE NOT NULL,
   email TEXT UNIQUE NOT NULL,
-  senha VARCHAR(255),
+  senha TEXT
   endereco VARCHAR(200),
   cep VARCHAR(9),
   numero_de_casa VARCHAR(10),
@@ -119,7 +119,7 @@ CREATE TABLE pedidos (
   cliente_id INTEGER,
   data_pedido DATE,
   pagamento_id INTEGER,
-  status INTEGER,
+  status_id INTEGER,
   subtotal DECIMAL(6,2),
   frete DECIMAL(6,2),
   FOREIGN KEY (status) REFERENCES status_pedido(id),
@@ -134,7 +134,7 @@ CREATE TABLE itens_pedido (
   pedido_id INTEGER,
   produto_id INTEGER,
   quantidade INT,
-  preco DECIMAL(10,2),
+  preco DECIMAL(10,2) NOT NULL,
   FOREIGN KEY (pedido_id) REFERENCES pedidos(id),
   FOREIGN KEY (produto_id) REFERENCES produtos(id)
 );
@@ -196,7 +196,7 @@ CREATE TABLE estoque_relatorio (
 CREATE TABLE usuario_adm (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   email TEXT UNIQUE NOT NULL,
-  senha CHAR(255) NOT NULL,
+  senha TEXT NOT NULL,
   estoque_id INTEGER,
   estoque_relatorio_id INTEGER,
   FOREIGN KEY (estoque_id) REFERENCES estoque(id),
@@ -222,6 +222,7 @@ CREATE TABLE tamanho (
   produto_id INT,
   tamanho VARCHAR(5),
   quantidade INT
+  FOREIGN KEY (produto_id) REFERENCES produtos(id)
 );
 
 
