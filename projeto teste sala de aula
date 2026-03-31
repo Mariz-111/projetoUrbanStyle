@@ -19,7 +19,7 @@ CREATE TABLE produtos (
   cor VARCHAR(17),
   preco DECIMAL(10,2),
   descricao TEXT,
-  data_cadastro DATE,
+  data_cadastro DATE DEFAULT CURRENT_DATE,
   marca VARCHAR(100),
   FOREIGN KEY (fornecedor_id) REFERENCES fornecedor(id),
   FOREIGN KEY (categoria_id) REFERENCES categorias(id)
@@ -108,6 +108,7 @@ CREATE TABLE filtro_de_cor (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   produto_id INTEGER,
   cor VARCHAR(50),
+  cor_id  INTEGER,
   FOREIGN KEY (produto_id) REFERENCES produtos(id)
 );
 
@@ -181,9 +182,14 @@ CREATE TABLE fornecedor (
 
 CREATE TABLE tamanho (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  id_fornecedor INT,
+  produto_id INT,
   tamanho VARCHAR(5),
-  quantidade VARCHAR(5)
+  quantidade INT
+);
+
+CREATE TABLE cores (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  nome VARCHAR(50)
 );
 
 CREATE INDEX idx_email ON cliente(email);
@@ -227,7 +233,7 @@ VALUES
 (9,9,'Juliana Costa','Bahia', '11990123456', '96385274100', 'juliana@gmail.com', 'juli2024', 'Rua Haddock Lobo', '01414000','756'),
 (10,10,'Rafael Gomes','Bahia', '11998989898', '15935748600', 'rafael@gmail.com', 'rafa321', 'Av. Rebouças', '05402000','75');
 
-INSERT INTO categorias (nome)
+INSERT INTO categorias (categoria_id,nome)
 VALUES
 ('1','Camisa Social Slim'),
 ('2','Polo Premium'),
@@ -242,12 +248,80 @@ VALUES
 ('11','Camisa Social Listrada'),
 ('12','Calça Jeans Slim');
 
-INSERT INTO tamanho (id, id_produto, tamanho, quantidade)
+INSERT INTO tamanho (id, categoria_id, tamanho, quantidade)
 VALUES
+
+--Camisa Social Slim
 (1,1,'P','?'),
 (2,1,'M','?'),
 (3,1,'G','?'),
 (4,1,'GG','?');
+
+--Polo Premium
+(1,2,'P','?'),
+(2,2,'M','?'),
+(3,2,'G','?'),
+(4,2,'GG','?');
+
+--Calça Chino Slim
+(1,3,'P','?'),
+(2,3,'M','?'),
+(3,3,'G','?'),
+(4,3,'GG','?');
+
+--Blazer Estruturado
+(1,4,'P','?'),
+(2,4,'M','?'),
+(3,4,'G','?'),
+(4,4,'GG','?');
+
+--Cinto Couro Legítimo
+(1,5,'P','?'),
+(2,5,'M','?'),
+(3,5,'G','?'),
+(4,5,'GG','?');
+
+--Carteira Couro Slim
+(1,6,'P','?'),
+(2,6,'M','?'),
+(3,6,'G','?'),
+(4,6,'GG','?');
+
+--Relógio Analógico
+(1,7,'P','?'),
+(2,7,'M','?'),
+(3,7,'G','?'),
+(4,7,'GG','?');
+
+--Tênis Couro
+(1,8,'P','?'),
+(2,8,'M','?'),
+(3,8,'G','?'),
+(4,8,'GG','?');
+
+--Bermuda Cargo
+(1,9,'P','?'),
+(2,9,'M','?'),
+(3,9,'G','?'),
+(4,9,'GG','?');
+
+--Jaqueta Bomber
+(1,10,'P','?'),
+(2,10,'M','?'),
+(3,10,'G','?'),
+(4,10,'GG','?');
+
+--Camisa Social Listrada
+(1,11,'P','?'),
+(2,11,'M','?'),
+(3,11,'G','?'),
+(4,11,'GG','?');
+
+--Calça Jeans Slim
+(1,12,'P','?'),
+(2,12,'M','?'),
+(3,12,'G','?'),
+(4,12,'GG','?');
 
 INSERT INTO produtos
 (nome, categoria_id, fornecedor_id, cor_id, preco, marca, descricao, data_cadastro)
