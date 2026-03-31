@@ -563,16 +563,16 @@ VALUES
   
 SELECT *
 FROM pedidos p
-JOIN status_pedido s ON p.status = s.id
+JOIN status_pedido s ON p.status_id = s.id
 WHERE s.codigo = 'pendente';
 
-SELECT id, subtotal, status
+SELECT id, subtotal, status_id
 FROM pedidos
 WHERE subtotal > 500;
 
 SELECT *
 FROM pedidos
-WHERE data_pedido BETWEEN '2025-06-01' AND '2025-06-03';
+WHERE data_pedido BETWEEN '2025-03-01' AND '2025-03-03';
 
 SELECT *
 FROM pedidos
@@ -601,12 +601,12 @@ WHERE c.id = 3;
 
 SELECT 
 p.nome,
-f.cor,
+c.cor,
 p.tamanho,
 e.quantidade
 FROM produtos p
-JOIN estoque e
-ON e.produto_id = p.id
+JOIN estoque e ON e.produto_id = p.id
+JOIN filtro_de_cor c ON c.produto_id = p.id
 WHERE e.id = 2;
 
 SELECT 
