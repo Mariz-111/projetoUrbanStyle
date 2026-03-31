@@ -35,7 +35,6 @@ CREATE TABLE fornecedor (
 CREATE TABLE produtos (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   nome TEXT NOT NULL,
-  tamanho VARCHAR(100),
   categoria_id INTEGER,
   fornecedor_id INTEGER,
   preco DECIMAL(10,2),
