@@ -1,3 +1,7 @@
+-----TABELAS-----
+
+
+--CLIENTE
 CREATE TABLE cliente (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   nome TEXT NOT NULL,
@@ -5,26 +9,44 @@ CREATE TABLE cliente (
   telefone TEXT
 );
 
+
+--CATEGORIA
 CREATE TABLE categorias (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  nome VARCHAR(100)
+  nome TEXT NOT NULL
 );
 
+
+--FORNECEDOR
+CREATE TABLE fornecedor (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  nome_empresa TEXT NOT NULL,
+  cnpj VARCHAR(18),
+  telefone VARCHAR(15),
+  email TEXT UNIQUE NOT NULL,
+  endereco VARCHAR(200),
+  cidade VARCHAR(100),
+  estado VARCHAR(50),
+  cep VARCHAR(9)
+);
+
+
+--PRODUTOS
 CREATE TABLE produtos (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  nome VARCHAR(32),
-  tamanho VARCHAR(100),
+  nome TEXT NOT NULL,
   categoria_id INTEGER,
   fornecedor_id INTEGER,
-  cor VARCHAR(17),
   preco DECIMAL(10,2),
   descricao TEXT,
-  data_cadastro DATE,
+  data_cadastro DATE DEFAULT CURRENT_DATE,
   marca VARCHAR(100),
   FOREIGN KEY (fornecedor_id) REFERENCES fornecedor(id),
   FOREIGN KEY (categoria_id) REFERENCES categorias(id)
 );
 
+
+--CUPONS
 CREATE TABLE cupons (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   codigo VARCHAR(20) UNIQUE,
@@ -32,6 +54,8 @@ CREATE TABLE cupons (
   validade DATE
 );
 
+
+--COMPRAS
 CREATE TABLE compras (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   usuario_id INTEGER,
@@ -50,21 +74,25 @@ CREATE TABLE compras (
   FOREIGN KEY (cupom_id) REFERENCES cupons(id)
 );
 
+
+--USUARIO
 CREATE TABLE area_do_usuario (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   cliente_id INTEGER,
   localizacao VARCHAR(100),
-  nome VARCHAR(100),
+  nome TEXT NOT NULL,
   telefone VARCHAR(13),
-  cpf VARCHAR(12),
-  email VARCHAR(40),
-  senha VARCHAR(30),
+  cpf TEXT UNIQUE NOT NULL,
+  email TEXT UNIQUE NOT NULL,
+  senha TEXT,
   endereco VARCHAR(200),
   cep VARCHAR(9),
   numero_de_casa VARCHAR(10),
   FOREIGN KEY (cliente_id) REFERENCES cliente(id)
 );
 
+
+--ESTOQUE
 CREATE TABLE estoque (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   produto_id INTEGER,
@@ -76,34 +104,42 @@ CREATE TABLE estoque (
   FOREIGN KEY (produto_id) REFERENCES produtos(id)
 );
 
+
+--PAGAMENTO
 CREATE TABLE forma_de_pagamento (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   tipo_de_pagamento VARCHAR(20)
 );
 
+
+--PEDIDOS
 CREATE TABLE pedidos (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   cliente_id INTEGER,
   data_pedido DATE,
   pagamento_id INTEGER,
-  status INTEGER,
+  status_id INTEGER,
   subtotal DECIMAL(6,2),
   frete DECIMAL(6,2),
-  FOREIGN KEY (status) REFERENCES status_pedido(id),
+  FOREIGN KEY (status_id) REFERENCES status_pedido(id),
   FOREIGN KEY (cliente_id) REFERENCES cliente(id),
   FOREIGN KEY (pagamento_id) REFERENCES forma_de_pagamento(id)
 );
 
+
+--ITENS PEDIDOS
 CREATE TABLE itens_pedido (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   pedido_id INTEGER,
   produto_id INTEGER,
   quantidade INT,
-  preco DECIMAL(6,2),
+  preco DECIMAL(10,2) NOT NULL,
   FOREIGN KEY (pedido_id) REFERENCES pedidos(id),
   FOREIGN KEY (produto_id) REFERENCES produtos(id)
 );
 
+
+--COR
 CREATE TABLE filtro_de_cor (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   produto_id INTEGER,
@@ -111,6 +147,8 @@ CREATE TABLE filtro_de_cor (
   FOREIGN KEY (produto_id) REFERENCES produtos(id)
 );
 
+
+--ITENS COMPRA
 CREATE TABLE itens_compra (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   compra_id INTEGER,
@@ -121,6 +159,8 @@ CREATE TABLE itens_compra (
   FOREIGN KEY (produto_id) REFERENCES produtos(id)
 );
 
+
+--AVALIAÇÃO
 CREATE TABLE avaliacao (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   usuario_id INTEGER,
@@ -132,11 +172,14 @@ CREATE TABLE avaliacao (
   FOREIGN KEY (produto_id) REFERENCES produtos(id)
 );
 
+--STATUS PEDIDOS
 CREATE TABLE status_pedido (
   id INTEGER PRIMARY KEY,
-  codigo TEXT UNIQUE NOT NULL CHECK (codigo IN ('pendente', 'pago', 'separacao', 'enviado', 'entregue', 'cancelado'))
+  codigo TEXT UNIQUE NOT NULL CHECK (codigo IN ('pendente', 'pago', 'enviado', 'entregue', 'cancelado'))
 );
 
+
+--RELATORIO DE ESTOQUE
 CREATE TABLE estoque_relatorio (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   produto_id INTEGER,
@@ -147,37 +190,43 @@ CREATE TABLE estoque_relatorio (
   FOREIGN KEY (produto_id) REFERENCES produtos(id)
 );
 
+
+--ADM
 CREATE TABLE usuario_adm (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  email VARCHAR(100) NOT NULL UNIQUE,
-  senha CHAR(8) NOT NULL,
+  email TEXT UNIQUE NOT NULL,
+  senha TEXT NOT NULL,
   estoque_id INTEGER,
   estoque_relatorio_id INTEGER,
   FOREIGN KEY (estoque_id) REFERENCES estoque(id),
   FOREIGN KEY (estoque_relatorio_id) REFERENCES estoque_relatorio(id)
 );
-  
+
+
+--FUNCIONARIO
 CREATE TABLE funcionario (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  nome VARCHAR(32),
+  nome TEXT NOT NULL,
   cargo VARCHAR(50),
   salario DECIMAL(10,2),
   telefone VARCHAR(15),
-  email VARCHAR(100),
+  email TEXT UNIQUE NOT NULL,
   data_contratacao DATE
 );
 
-CREATE TABLE fornecedor (
+
+--TAMANHO
+CREATE TABLE tamanho (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  nome_empresa VARCHAR(100),
-  cnpj VARCHAR(18),
-  telefone VARCHAR(15),
-  email VARCHAR(100),
-  endereco VARCHAR(200),
-  cidade VARCHAR(100),
-  estado VARCHAR(50),
-  cep VARCHAR(9)
+  produto_id INT,
+  tamanho VARCHAR(5),
+  quantidade INT,
+  FOREIGN KEY (produto_id) REFERENCES produtos(id)
 );
+
+
+-----INDEX-----
+
 
 CREATE INDEX idx_email ON cliente(email);
 CREATE INDEX idx_produto ON produtos(nome, categoria_id, fornecedor_id);
@@ -185,14 +234,26 @@ CREATE INDEX idx_categoria ON categorias(nome);
 CREATE INDEX idx_fornecedor ON fornecedor(cnpj, nome_empresa);
 CREATE INDEX idx_pedido ON pedidos(cliente_id, pagamento_id, data_pedido);
 CREATE INDEX idx_itens_do_pedido ON itens_pedido(pedido_id, produto_id);
-CREATE INDEX idx_pagamento ON pedidos(pagamento_id, status);
+CREATE INDEX idx_pagamento ON pedidos(pagamento_id, status_id);
 CREATE INDEX idx_funcionario ON funcionario(email, nome);
 CREATE INDEX idx_estoque ON estoque(produto_id);
 CREATE INDEX idx_compras ON compras(usuario_id, produto_id, data_pagamento);
 CREATE INDEX idx_avaliacao ON avaliacao(usuario_id, produto_id);
 CREATE INDEX idx_itens_compra ON itens_compra(compra_id, produto_id);
 CREATE INDEX idx_produto_cor ON filtro_de_cor(produto_id, cor);
+CREATE INDEX idx_status_pedido ON pedidos(status_id);
+CREATE INDEX idx_itens_produto ON itens_pedido(produto_id);
+CREATE INDEX idx_produto_preco ON produtos(preco);
+CREATE INDEX idx_usuario_email ON area_do_usuario(email);
+CREATE INDEX idx_usuario_cpf ON area_do_usuario(cpf);
+CREATE INDEX idx_tamanho_produto ON tamanho(produto_id);
+CREATE INDEX idx_status_pagamento ON compras(status_pagamento);
 
+
+-----INSERTS-----
+
+
+--CLIENTE
 INSERT INTO cliente (id, nome, email, telefone)
 VALUES
 (1,'Francisco', 'francisco@gmail.com', '12345678901'),
@@ -206,35 +267,51 @@ VALUES
 (9,'Fernando','fernando@gmail.com', '85274196300'),
 (10,'Maria','maria@email.com', '96385274100');
 
-INSERT INTO area_do_usuario
-(id, cliente_id, nome, localizacao, telefone, cpf, email, senha, endereco, cep, numero_de_casa)
-VALUES
-(1,1,'Joao Silva','Sao Paulo', '11987654321', '12345678901', 'joao@gmail.com', '123456', 'Rua das Flores', '01001000','123'),
-(2,2,'Maria Oliveira','Sao Paulo', '11991234567', '98765432100', 'maria@gmail.com', 'abcdef', 'Av Paulista', '01310000','1000'),
-(3,3,'Carlos Souza','Rio de Janeiro', '11999887766', '45612378900', 'carlos@gmail.com', 'senha123', 'Rua Augusta', '01305000','500'),
-(4,4,'Ana Pereira','Mato Grosso', '11995554433', '32165498700', 'ana@gmail.com', 'ana2024', 'Rua Vergueiro', '01504000','231'),
-(5,5,'Fernanda Lima','Rio Grande do Sul', '11997776655', '78945612300', 'fernanda@gmail.com', 'fer123', 'Rua Bela Cintra', '01415000','315'),
-(6,6,'Bruno Martins','Sao Paulo', '11993456789', '65432198700', 'bruno@gmail.com', 'bruno123', 'Rua São João', '01135000','878'),
-(7,7,'Camila Rocha','Rio de Janeiro', '11992345678', '74185296300', 'camila@gmail.com', 'camila456', 'Av. Brigadeiro Faria Lima', '01452000','656'),
-(8,8,'Diego Fernandes','Bahia', '11991239876', '85274196300', 'diego@gmail.com', 'diego789', 'Rua Consolação', '01302000','167'),
-(9,9,'Juliana Costa','Bahia', '11990123456', '96385274100', 'juliana@gmail.com', 'juli2024', 'Rua Haddock Lobo', '01414000','756'),
-(10,10,'Rafael Gomes','Bahia', '11998989898', '15935748600', 'rafael@gmail.com', 'rafa321', 'Av. Rebouças', '05402000','75');
 
-INSERT INTO categorias (nome)
+--CATEGORIA
+INSERT INTO categorias (id,nome)
 VALUES
-('Camisa'),
-('Calça'),
-('Boné'),
-('Relógio');
+(1,'Camisa Social Slim'),
+(2,'Polo Premium'),
+(3,'Calça Chino Slim'),
+(4,'Blazer Estruturado'),
+(5,'Cinto Couro Legítimo'),
+(6,'Carteira Couro Slim'),
+(7,'Relógio Analógico'),
+(8,'Tênis Couro'),
+(9,'Bermuda Cargo'),
+(10,'Jaqueta Bomber'),
+(11,'Camisa Social Listrada'),
+(12,'Calça Jeans Slim');
 
+
+-- FORNECEDOR
+INSERT INTO fornecedor (nome_empresa, cnpj, telefone, email, endereco, cidade, estado, cep)
+VALUES
+('Ferreiros','12.345.678/0001-90','1134567890','contato@ferreios.com','Av. Industrial 100','São Paulo','SP','01010-000'),
+('Veltrade','23.456.789/0001-88','1133344455','vendas@veltrade.com','Rua das Indústrias 50','Campinas','SP','13010-100'),
+('SMK','34.567.890/0001-77','1145567788','suporte@smk.com','Av. Central 200','Rio de Janeiro','RJ','20010-200');
+
+
+--PRODUTOS
 INSERT INTO produtos
-(nome, tamanho, categoria_id, fornecedor_id, cor, preco, marca, descricao, data_cadastro)
+(nome, categoria_id, fornecedor_id, preco, marca, descricao, data_cadastro)
 VALUES
-('Camisa_Masculina','M',1,'1','Preta',79.90,'Nike','camisa casual masculina','2026-03-01'),
-('Calça_Jeans_Masculina','42',2,'1','Azul',129.90,'Urban','calça jeans masculina','2026-01-21'),
-('Boné_Couro','U',3,'1','Marrom',79.90,'Urban','boné couro','2026-02-15'),
-('Relógio_Retro','38-40',4,'1','Chumbo',690.90,'RetroX','relógio estilo retrô','2026-01-10');
+('Camisa_Social_Slim', 1, 1, 79.90, 'Ferreiros', '?', '?'),
+('Polo_Premium', 2, 2, 79.90, 'Veltrade', '?', '?'),
+('Calça_Chino_Slim', 3, 1, 79.90, 'Ferreiros', '?', '?'),
+('Blazer_Estrutura', 4, 2, 79.90, 'Veltrade', '?', '?'),
+('Cinto_Couro_Legítimo', 5, 3, 79.90, 'SMK', '?', '?'),
+('Carteira_Couro_Slim', 6, 3, 79.90, 'SMK', '?', '?'),
+('Relógio_Analógico', 7, 3, 79.90, 'SMK', '?', '?'),
+('Tênis_Couro', 8, 1, 79.90, 'Ferreiros', '?', '?'),
+('Bermuda_Cargo', 9, 1, 79.90, 'Ferreiros', '?', '?'),
+('Jaqueta_Bomber', 10, 2, 79.90, 'Veltrade', '?', '?'),
+('Camisa_Social_Listrada',11 ,1, 79.90, 'Ferreiros', '?', '?'),
+('Calça_Jeans_Slim', 12, 1, 79.90, 'Ferreiros', '?', '?');
 
+
+--CUPONS
 INSERT INTO cupons (id, codigo, desconto, validade)
 VALUES
 (1, 'DESC10', 10.00, '2026-12-31'),
@@ -244,6 +321,8 @@ VALUES
 (5, 'FEVEREIRO26', 26.00, '2026-02-28'),
 (6, 'PIX10', 10.00, '2026-12-31');
 
+
+--COMPRA
 INSERT INTO compras (usuario_id, produto_id, metodo_pagamento, data_pagamento, status_pagamento, endereco_entrega, status_entrega, frete, cupom_id, quantidade, valor_total)
 VALUES
 (1,1,'Cartão de Crédito','2026-01-10','Pago','Rua das flores, 123','Em processamento',25.00,1,1,94.90),
@@ -258,19 +337,120 @@ VALUES
 (10,3,'PIX','2026-02-15','Aguardando','Rua Jardim Dredes,11','Em processamento',12.00,6,1,91.90),
 (10,3,'Boleto','2026-02-16','Pago','Praça da Terra, 11','Em processamento',12.00,NULL,1,91.90);
 
+
+--USUARIO
+INSERT INTO area_do_usuario
+(id, cliente_id, nome, localizacao, telefone, cpf, email, senha, endereco, cep, numero_de_casa)
+VALUES
+(1,1,'Joao Silva','Sao Paulo', '11987654321', '12345678901', 'joao@gmail.com', '123456', 'Rua das Flores', '01001000','123'),
+(2,2,'Maria Oliveira','Sao Paulo', '11991234567', '98765432100', 'maria@gmail.com', 'abcdef', 'Av Paulista', '01310000','1000'),
+(3,3,'Carlos Souza','Rio de Janeiro', '11999887766', '45612378900', 'carlos@gmail.com', 'senha123', 'Rua Augusta', '01305000','500'),
+(4,4,'Ana Pereira','Mato Grosso', '11995554433', '32165498700', 'ana@gmail.com', 'ana2024', 'Rua Vergueiro', '01504000','231'),
+(5,5,'Fernanda Lima','Rio Grande do Sul', '11997776655', '78945612300', 'fernanda@gmail.com', 'fer123', 'Rua Bela Cintra', '01415000','315'),
+(6,6,'Bruno Martins','Sao Paulo', '11993456789', '65432198700', 'bruno@gmail.com', 'bruno123', 'Rua São João', '01135000','878'),
+(7,7,'Camila Rocha','Rio de Janeiro', '11992345678', '74185296300', 'camila@gmail.com', 'camila456', 'Av. Brigadeiro Faria Lima', '01452000','656'),
+(8,8,'Diego Fernandes','Bahia', '11991239876', '85274196300', 'diego@gmail.com', 'diego789', 'Rua Consolação', '01302000','167'),
+(9,9,'Juliana Costa','Bahia', '11990123456', '96385274100', 'juliana@gmail.com', 'juli2024', 'Rua Haddock Lobo', '01414000','756'),
+(10,10,'Rafael Gomes','Bahia', '11998989898', '15935748600', 'rafael@gmail.com', 'rafa321', 'Av. Rebouças', '05402000','75');
+
+
+--ESTOQUE 
+INSERT INTO estoque (produto_id, quantidade)
+VALUES
+(1, ?),
+(2, ?),
+(3, ?),
+(4, ?),
+(5, ?),
+(6, ?),
+(7, ?),
+(8, ?),
+(9, ?),
+(10, ?),
+(11, ?),
+(12, ?);
+   
+   
+--PAGAMENTO
+INSERT INTO forma_de_pagamento (id, tipo_de_pagamento)
+VALUES
+(1,'Cartão de Crédito'),
+(2,'Cartão de Débito'),
+(3,'Pix'),
+(4,'Boleto');
+
+
+--PEDIDOS
+INSERT INTO pedidos (cliente_id, pagamento_id, status_id, data_pedido, subtotal, frete)
+VALUES
+(1, 1, 1, '2026-03-01', 79.90, 15.00),
+(2, 3, 1, '2026-03-01', 299.90, 20.00),
+(3, 2, 1, '2026-03-02', 129.90, 10.00),
+(4, 4, 1, '2026-03-02', 690.90, 15.00),
+(5, 3, 1, '2026-03-03', 79.90, 12.00), 
+(6, 2, 1, '2026-03-04', 79.90, 13.00),
+(7, 3, 1, '2026-03-06', 79.90, 10.00),
+(8, 3, 1, '2026-03-09', 79.90, 10.00),
+(9, 2, 1, '2026-03-11', 79.90, 12.00),
+(10, 3, 1, '2026-03-12', 79.90, 10.00),
+(11, 1, 1, '2026-03-14', 79.90, 13.00),
+(12, 3, 1, '2026-03-16', 79.90, 12.00);
+  
+  
+--ITENS PEDIDOS
+INSERT INTO itens_pedido (pedido_id, produto_id, quantidade, preco)
+VALUES
+(1, 1, 1, 79.90),
+(2, 2, 1, 299.90),
+(3, 3, 1, 129.90),
+(4, 4, 1, 690.90);
+
+
+--COR
+INSERT INTO filtro_de_cor (produto_id, cor)
+VALUES
+(1,'Preto'),
+(2,'Branco'),
+(3,'Preto'),
+(4,'Azul');
+
+
+--ITENS COMPRA
+INSERT INTO itens_compra (compra_id, produto_id, quantidade, preco_unitario)
+VALUES 
+(1, 1, 1, 79.90),
+(
+(  
+(  
+(  
+(  
+(  
+(  
+(  
+(  
+(  
+( 
+(  
+  
+  
+--AVALIACAO
 INSERT INTO avaliacao (usuario_id, produto_id, nota, comentario, data_avaliacao)
 VALUES
 (1,1,5,'Produto excelente','2026-03-10'),
 (2,1,4,'Muito bom','2026-03-11'),
 (3,2,3,'Produto ok','2026-03-12');
+  
+  
+--STATUS PEDIDOS
+INSERT INTO status_pedido (id, codigo) VALUES
+(1, 'pendente'),
+(2, 'pago'),  
+(3, 'enviado'),  
+(4, 'entregue'),
+(5, 'cancelado');
 
-INSERT INTO estoque (produto_id, quantidade)
-VALUES
-(1, 1),
-(2, 1),
-(3, 1),
-(4, 1);
-
+  
+--ESTOQUE RELATORIO
 INSERT INTO estoque_relatorio
 (produto_id, entrada_de_mercadoria, saida_para_troca, saida_venda, registro_movimentacao)
 VALUES
@@ -284,70 +464,121 @@ VALUES
 (3, '2026-05-19', '2026-05-20', NULL, 'Produto enviado para troca'),
 (4, '2026-07-20', '2026-07-22', '2026-07-24', 'Venda realizada'),
 (2, '2026-09-18', NULL, NULL, 'Produto está no fornecedor');
-
-INSERT INTO forma_de_pagamento (id, tipo_de_pagamento)
-VALUES
-(1,'Cartão de Crédito'),
-(2,'Cartão de Débito'),
-(3,'Pix'),
-(4,'Boleto');
-
-INSERT INTO pedidos (cliente_id, pagamento_id, data_pedidos, subtotal, frete)
-VALUES
-(1, 1,1, '2026-03-01', 79.90, 15.00),
-(2, 3,1, '2026-02-18', 299.90, 20.00),
-(3, 2,1, '2026-03-02', 129.90, 10.00),
-(4, 4,1, '2026-03-03', 690.90, 15.00);
-
-INSERT INTO filtro_de_cor (produto_id, cor)
-VALUES
-(1,'Preto'),
-(2,'Branco'),
-(3,'Preto'),
-(4,'Azul');
-
-INSERT INTO itens_pedido (pedido_id, produto_id, quantidade, preco)
-VALUES
-(1, 1, 1, 79.90),
-(2, 2, 1, 299.90),
-(3, 3, 1, 129.90),
-(4, 4, 1, 690.90);
-
+  
+  
+--ADM
 INSERT INTO usuario_adm (email, senha, estoque_id, estoque_relatorio_id)
 VALUES
 ('eduardoadmin0@urbanstyle.com', 'adm12345', 1, 1),
 ('eduardoadmin1@urbanstyle.com', 'adm54321', 2, 2);
 
+  
+-- FUNCIONARIO
 INSERT INTO funcionario (nome, cargo, salario, telefone, email, data_contratacao)
 VALUES
 ('Ricardo Santos','Gerente',4500.00,'11987654321','ricardo@empresa.com','2018-01-10'),
 ('Ana Souza','Vendedora',2500.00,'11991234567','ana@empresa.com','2020-03-15'),
 ('Bruno Lima','Estoquista',2200.00,'11999887766','bruno@empresa.com','2019-05-20');
-
-INSERT INTO fornecedor (nome_empresa, cnpj, telefone, email, endereco, cidade, estado, cep)
+  
+  
+--TAMANHO  
+INSERT INTO tamanho (produto_id, tamanho, quantidade)
 VALUES
-('Naike','12.345.678/0001-90','1134567890','contato@nike.com','Av. Industrial 100','São Paulo','SP','01010-000'),
-('Urban Fashion','23.456.789/0001-88','1133344455','vendas@urban.com','Rua das Indústrias 50','Campinas','SP','13010-100'),
-('RetroX Relógios','34.567.890/0001-77','1145567788','suporte@retrox.com','Av. Central 200','Rio de Janeiro','RJ','20010-200');
+--Camisa Social Slim
+(1,'P','?'),
+(1,'M','?'),
+(1,'G','?'),
+(1,'GG','?');
 
+--Polo Premium
+(2,'P','?'),
+(2,'M','?'),
+(2,'G','?'),
+(2,'GG','?');
+
+--Calça Chino Slim
+(3,'P','?'),
+(3,'M','?'),
+(3,'G','?'),
+(3,'GG','?');
+
+--Blazer Estruturado
+(4,'P','?'),
+(4,'M','?'),
+(4,'G','?'),
+(4,'GG','?');
+
+--Cinto Couro Legítimo
+(5,'P','?'),
+(5,'M','?'),
+(5,'G','?'),
+(5,'GG','?');
+
+--Carteira Couro Slim
+(6,'P','?'),
+(6,'M','?'),
+(6,'G','?'),
+(6,'GG','?');
+
+--Relógio Analógico
+(7,'P','?'),
+(7,'M','?'),
+(7,'G','?'),
+(7,'GG','?');
+
+--Tênis Couro
+(8,'P','?'),
+(8,'M','?'),
+(8,'G','?'),
+(8,'GG','?');
+
+--Bermuda Cargo
+(9,'P','?'),
+(9,'M','?'),
+(9,'G','?'),
+(9,'GG','?');
+
+--Jaqueta Bomber
+(10,'P','?'),
+(10,'M','?'),
+(10,'G','?'),
+(10,'GG','?');
+
+--Camisa Social Listrada
+(11,'P','?'),
+(11,'M','?'),
+(11,'G','?'),
+(11,'GG','?');
+
+--Calça Jeans Slim
+(12,'P','?'),
+(12,'M','?'),
+(12,'G','?'),
+(12,'GG','?');
+   
+  
+-----SELECT-----
+  
+  
 SELECT *
-FROM pedidos
-WHERE status = 'pendente';
+FROM pedidos p
+JOIN status_pedido s ON p.status_id = s.id
+WHERE s.codigo = 'pendente';
 
-SELECT id, subtotal, status
+SELECT id, subtotal, status_id
 FROM pedidos
 WHERE subtotal > 500;
 
 SELECT *
 FROM pedidos
-WHERE data_pedido BETWEEN '2025-06-01' AND '2025-06-03';
+WHERE data_pedido BETWEEN '2026-03-01' AND '2026-03-03';
 
 SELECT *
 FROM pedidos
 WHERE cliente_id = 5;
 
 UPDATE pedidos
-SET status = 'entregue'
+SET status_id = 5
 WHERE id = 2;
 
 UPDATE pedidos
@@ -355,8 +586,8 @@ SET subtotal = 950.00
 WHERE id = 2;
 
 UPDATE pedidos
-SET status = 'cancelado'
-WHERE status = 'pendente';
+SET status_id = 5
+WHERE status_id = 1;
 
 SELECT 
 p.nome,
@@ -369,13 +600,13 @@ WHERE c.id = 3;
 
 SELECT 
 p.nome,
-p.cor,
+c.cor,
 p.tamanho,
 e.quantidade
 FROM produtos p
-JOIN estoque e
-ON e.produto_id = p.id
-WHERE e.id 2;
+JOIN estoque e ON e.produto_id = p.id
+JOIN filtro_de_cor c ON c.produto_id = p.id
+WHERE e.id = 2;
 
 SELECT 
 p.nome,
@@ -394,6 +625,4 @@ p.data_pedido,
 c.nome,
 c.email
 FROM pedidos p
-JOIN cliente c
-ON p.cliente_id = c.id
-WHERE c.id = 3;
+JOIN cliente c ON p.cliente_id = c.id;
