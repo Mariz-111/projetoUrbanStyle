@@ -297,9 +297,9 @@ VALUES
 INSERT INTO produtos
 (nome, categoria_id, fornecedor_id, preco, marca, descricao, data_cadastro)
 VALUES
-('Camisa_Social_Slim', 1, 1, 79.90, 'Ferreiros', '?', '?'),
+('Camisa_Social_Slim', 1, 1, 79.90, 'Veltrade', '?', '?'),
 ('Polo_Premium', 2, 2, 79.90, 'Veltrade', '?', '?'),
-('Calça_Chino_Slim', 3, 1, 79.90, 'Ferreiros', '?', '?'),
+('Calça_Chino_Slim', 3, 1, 79.90, 'FixPoint', '?', '?'),
 ('Blazer_Estrutura', 4, 2, 79.90, 'Veltrade', '?', '?'),
 ('Cinto_Couro_Legítimo', 5, 3, 79.90, 'SMK', '?', '?'),
 ('Carteira_Couro_Slim', 6, 3, 79.90, 'SMK', '?', '?'),
@@ -383,27 +383,35 @@ VALUES
 --PEDIDOS
 INSERT INTO pedidos (cliente_id, pagamento_id, status_id, data_pedido, subtotal, frete)
 VALUES
-(1, 1, 1, '2026-03-01', 79.90, 15.00),
-(2, 3, 1, '2026-03-01', 299.90, 20.00),
-(3, 2, 1, '2026-03-02', 129.90, 10.00),
-(4, 4, 1, '2026-03-02', 690.90, 15.00),
-(5, 3, 1, '2026-03-03', 79.90, 12.00), 
-(6, 2, 1, '2026-03-04', 79.90, 13.00),
-(7, 3, 1, '2026-03-06', 79.90, 10.00),
-(8, 3, 1, '2026-03-09', 79.90, 10.00),
-(9, 2, 1, '2026-03-11', 79.90, 12.00),
-(10, 3, 1, '2026-03-12', 79.90, 10.00),
-(11, 1, 1, '2026-03-14', 79.90, 13.00),
-(12, 3, 1, '2026-03-16', 79.90, 12.00);
+(1, 1, 1, '2026-03-01', 389,90, 15.00),
+(2, 3, 1, '2026-03-01', 349,90, 20.00),
+(3, 2, 1, '2026-03-02', 429,90, 10.00),
+(4, 4, 1, '2026-03-02', 649,90, 15.00),
+(5, 3, 1, '2026-03-03', 369,90, 12.00), 
+(6, 2, 1, '2026-03-04', 399,90, 13.00),
+(7, 3, 1, '2026-03-06', 529,90, 10.00),
+(8, 3, 1, '2026-03-09', 449,90, 10.00),
+(9, 2, 1, '2026-03-11', 349,90, 12.00),
+(10, 3, 1, '2026-03-12', 589,90, 10.00),
+(11, 1, 1, '2026-03-14', 399,90, 13.00),
+(12, 3, 1, '2026-03-16', 359,90, 12.00);
   
   
 --ITENS PEDIDOS
 INSERT INTO itens_pedido (pedido_id, produto_id, quantidade, preco)
 VALUES
-(1, 1, 1, 79.90),
-(2, 2, 1, 299.90),
-(3, 3, 1, 129.90),
-(4, 4, 1, 690.90);
+(1, 1, 10, 389,90),
+(2, 2, 10, 349,90),
+(3, 3, 10, 429,90),
+(4, 4, 10, 649,90),
+(5, 5, 10, 369,90),
+(6, 6, 10, 399,90),
+(7, 7, 10, 529,90),
+(8, 8, 10, 449,90),
+(9, 9, 10, 349,90),
+(10, 10, 10, 589,90),
+(11, 11, 10, 399,90),
+(12, 12, 10, 359,90);
 
 
 --COR
@@ -462,16 +470,16 @@ INSERT INTO status_pedido (id, codigo) VALUES
 INSERT INTO estoque_relatorio
 (produto_id, entrada_de_mercadoria, saida_para_troca, saida_venda, registro_movimentacao)
 VALUES
-(1, '2026-01-10', NULL, '2026-01-12', 'Venda realizada'),
+(6, '2026-01-10', NULL, '2026-01-12', 'Venda realizada'),
 (2, '2026-01-12', NULL, NULL, 'Produto está no fornecedor'),
-(3, '2026-01-15', '2026-02-21', NULL, 'Produto enviado para troca'),
+(4, '2026-01-15', '2026-02-21', NULL, 'Produto enviado para troca'),
 (4, '2026-01-16', NULL, '2026-01-18', 'Venda realizada'),
 (3, '2026-01-18', NULL, NULL, 'Produto está no fornecedor'),
-(1, '2026-01-11', NULL, '2026-02-15', 'Venda realizada'),
+(12, '2026-01-11', NULL, '2026-02-15', 'Venda realizada'),
 (2, '2026-03-12', NULL, '2026-03-18', 'Venda realizada'),
-(3, '2026-05-19', '2026-05-20', NULL, 'Produto enviado para troca'),
+(6, '2026-05-19', '2026-05-20', NULL, 'Produto enviado para troca'),
 (4, '2026-07-20', '2026-07-22', '2026-07-24', 'Venda realizada'),
-(2, '2026-09-18', NULL, NULL, 'Produto está no fornecedor');
+(11, '2026-09-18', NULL, NULL, 'Produto está no fornecedor');
   
   
 --ADM
