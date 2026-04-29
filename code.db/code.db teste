@@ -4,13 +4,9 @@
 CREATE TABLE produto (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   nome TEXT NOT NULL,
-  fornecedor_id INTEGER,
   preco DECIMAL(10,2),
   descricao TEXT,
-  data_cadastro DATE DEFAULT CURRENT_DATE,
-  marca VARCHAR(100),
-  FOREIGN KEY (fornecedor_id) REFERENCES fornecedor(id),
-  FOREIGN KEY (categoria_id) REFERENCES categorias(id)
+  data_cadastro DATE DEFAULT CURRENT_DATE
 );
 
 --CUPON
@@ -98,17 +94,17 @@ VALUES
 --PRODUTO
 INSERT INTO produto (id, nome, fornecedor_id, preco, marca, descricao, data_cadastro)
 VALUES
-(1,'Spray para espinhas',1,79.90,'Bellevisage','Calmante','2026-02-02');
+(1, 'Spray para espinhas', 1, 60.00, 'Bellevisage', 'Calmante', '2026-05-02');
 
 --CUPON
 INSERT INTO cupon (id, codigo, desconto, validade)
 VALUES
-(1,'BELLEVISAGE10',20.00,'05-07-2026');
+(1, 'BELLEVISAGE10', 20.00, '05-07-2026');
 
 --COMPRA
 INSERT INTO compra (id, produto_id, metodo_pagamento, data_pagamento, status_pagamento, endereco_entrega, status_entrega, frete, cupom_id, quantidade, valor_total)
 VALUES
-(1,1,'Cartão de Crédito','2026-05-10','Pago','Rua das flores, 123','Em processamento',25.00,1,1,40.00);
+(1, 1, 'Cartão de Crédito', '2026-05-10', 'Pago', 'Rua das flores, 123', 'Em processamento', 20.00, 1, 1, 40.00);
   
 --PAGAMENTO
 INSERT INTO forma_de_pagamento (id, tipo_de_pagamento)
